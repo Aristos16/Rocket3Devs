@@ -85,7 +85,23 @@ const translations = {
         "Σχεδιάζουμε σύγχρονες, γρήγορες και responsive ιστοσελίδες με καθαρό design και ξεκάθαρη επικοινωνία.",
       paragraphOne:
         "Είμαστε τρεις web developers με έδρα το Ηράκλειο Κρήτης. Ως μικρή ομάδα, συνεργαζόμαστε άμεσα με κάθε πελάτη και αναλαμβάνουμε προσωπικά κάθε project.",
-      role: "Co-founder & Web Developer",
+      cards: [
+        {
+          icon: PencilRuler,
+          title: "Σύγχρονο Design",
+          desc: "Καθαρή αισθητική προσαρμοσμένη στην ταυτότητα της επιχείρησής σας.",
+        },
+        {
+          icon: Code2,
+          title: "Προσεγμένο Development",
+          desc: "Γρήγορες και responsive ιστοσελίδες με έμφαση στη σωστή λειτουργία.",
+        },
+        {
+          icon: MessageCircle,
+          title: "Άμεση Επικοινωνία",
+          desc: "Μιλάτε απευθείας με την ομάδα που σχεδιάζει και υλοποιεί το project σας.",
+        },
+      ],
     },
     servicesHeading: "Ιστοσελίδες για κάθε ανάγκη.",
     servicesKicker: "Services",
@@ -234,7 +250,23 @@ const translations = {
         "We design modern, fast, responsive websites with clean visuals and clear communication.",
       paragraphOne:
         "We are three web developers based in Heraklion, Crete. As a small team, we work directly with every client and personally handle each project.",
-      role: "Co-founder & Web Developer",
+      cards: [
+        {
+          icon: PencilRuler,
+          title: "Modern Design",
+          desc: "Clean visuals tailored to the identity and character of your business.",
+        },
+        {
+          icon: Code2,
+          title: "Thoughtful Development",
+          desc: "Fast, responsive websites built with attention to reliable performance.",
+        },
+        {
+          icon: MessageCircle,
+          title: "Direct Communication",
+          desc: "You speak directly with the team designing and building your project.",
+        },
+      ],
     },
     servicesHeading: "Websites for every need.",
     servicesKicker: "Services",
@@ -1484,27 +1516,20 @@ function Index() {
                 />
               </p>
               <div className="grid gap-3 pt-6 sm:grid-cols-3 sm:gap-4 sm:pt-7">
-                {[
-                  "Aristotelis Moulas",
-                  "Giannis Zaroliagkis",
-                  "Thodoris Nickaris",
-                ].map((name) => (
+                {t.about.cards.map((card) => (
                   <div
-                    key={name}
-                    className="group flex items-center gap-3 rounded-xl border border-[#153351]/10 bg-[#f1f4f4]/90 p-3 shadow-sm transition-all hover:-translate-y-1 hover:border-[#c97745]/60 hover:shadow-md sm:block sm:p-4"
+                    key={card.title}
+                    className="group flex items-start gap-3 rounded-xl border border-[#153351]/10 bg-[#f1f4f4]/90 p-3 shadow-sm transition-all hover:-translate-y-1 hover:border-[#c97745]/60 hover:shadow-md sm:block sm:p-4"
                   >
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#153351] text-white transition-transform group-hover:scale-105">
-                      {name
-                        .split(" ")
-                        .map((p) => p[0])
-                        .join("")}
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#153351] text-[#d98a50] transition-all group-hover:-rotate-6 group-hover:scale-105">
+                      <card.icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0 sm:mt-3">
-                      <p className="truncate text-sm font-semibold text-[#0b2136] sm:whitespace-normal">
-                        {name}
+                      <p className="text-sm font-semibold text-[#0b2136]">
+                        {card.title}
                       </p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-[#31526e] sm:text-xs">
-                        {t.about.role}
+                      <p className="mt-1 text-[11px] leading-relaxed text-[#31526e] sm:text-xs">
+                        {card.desc}
                       </p>
                     </div>
                   </div>
