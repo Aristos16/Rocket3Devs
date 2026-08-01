@@ -125,6 +125,7 @@ function CoffeeDemo() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [mapRequested, setMapRequested] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -187,7 +188,7 @@ function CoffeeDemo() {
         });
 
         createdMap = L.map(mapRef.current, {
-          center: [40.7243, -73.9981],
+          center: [35.3387, 25.1442],
           zoom: 15,
           scrollWheelZoom: false,
           zoomControl: false,
@@ -198,9 +199,9 @@ function CoffeeDemo() {
           maxZoom: 19,
         }).addTo(createdMap);
 
-        L.marker([40.7243, -73.9981], { icon })
+        L.marker([35.3387, 25.1442], { icon })
           .addTo(createdMap)
-          .bindPopup("<strong>Brewhaus</strong><br/>123 Main Street<br/>Downtown, NY 10001");
+          .bindPopup("<strong>Brewhaus</strong><br/>25 Avgoustou Street<br/>Heraklion, Crete");
 
         mapInstanceRef.current = createdMap;
       } catch (error) {
@@ -208,30 +209,16 @@ function CoffeeDemo() {
       }
     }
 
-    const mapElement = mapRef.current;
-    let mapObserver: IntersectionObserver | null = null;
+    if (!mapRequested) return;
 
-    if (mapElement && "IntersectionObserver" in window) {
-      mapObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting) return;
-          void initializeMap();
-          mapObserver?.disconnect();
-        },
-        { rootMargin: "250px 0px", threshold: 0.01 },
-      );
-      mapObserver.observe(mapElement);
-    } else {
-      void initializeMap();
-    }
+    void initializeMap();
 
     return () => {
       cancelled = true;
-      mapObserver?.disconnect();
       if (createdMap) createdMap.remove();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [mapRequested]);
 
   function scrollToSection(
     event: ReactMouseEvent<HTMLAnchorElement>,
@@ -443,9 +430,9 @@ function CoffeeDemo() {
                 <div className="coffee-info-block">
                   <h3>Address</h3>
                   <p>
-                    123 Main Street
+                    25 Avgoustou Street
                     <br />
-                    Downtown, NY 10001
+                    Heraklion, Crete
                   </p>
                 </div>
                 <div className="coffee-info-block">
@@ -457,7 +444,7 @@ function CoffeeDemo() {
                   </p>
                 </div>
                 <a
-                  href="https://maps.google.com/?q=123+Main+Street+Downtown+NY+10001"
+                  href="https://maps.google.com/?q=25+Avgoustou+Street+Heraklion+Crete"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="coffee-btn coffee-btn-primary coffee-map-button"
@@ -472,6 +459,28 @@ function CoffeeDemo() {
                 onMouseLeave={() => mapInstanceRef.current?.scrollWheelZoom.disable()}
               >
                 <div ref={mapRef} className="coffee-map-container" />
+                {!mapRequested && (
+                  <button
+                    type="button"
+                    className="coffee-map-overlay"
+                    onClick={() => setMapRequested(true)}
+                  >
+                    <svg
+                      className="coffee-map-overlay-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>Press to load the map</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -660,6 +669,21 @@ const coffeeStyles = `
   .coffee-map-container { width: 100%; height: 100%; z-index: 1; }
   .coffee-map-container .leaflet-control-attribution { opacity: .55; font-size: .6rem; }
   .coffee-map-container .leaflet-control-zoom { display: none; }
+  .coffee-map-overlay {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem;
+    background: linear-gradient(180deg, #e8e4df 0%, #d9d4ce 100%);
+    color: #6b655f;
+    border: none; cursor: pointer;
+    transition: background .25s ease, color .25s ease;
+  }
+  .coffee-map-overlay:hover { background: linear-gradient(180deg, #e2ded8 0%, #d2ccc5 100%); color: #554f49; }
+  .coffee-map-overlay:focus-visible { outline: 2px solid var(--coffee-accent); outline-offset: -2px; }
+  .coffee-map-overlay-icon { width: 34px; height: 34px; opacity: .7; }
+  .coffee-map-overlay span {
+    font-family: "Inter", sans-serif; font-size: .85rem; font-weight: 600;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
 
   .coffee-footer { padding: 2rem 0; background: var(--coffee-bg); }
   .coffee-footer-bottom { padding-top: 2rem; border-top: 1px solid var(--coffee-border); text-align: center; }
