@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { useRevealOnScroll } from "../hooks/use-reveal-on-scroll";
 import { translations, type Language } from "../i18n";
 import { About } from "../components/sections/About";
 import { Contact } from "../components/sections/Contact";
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [language, setLanguage] = useState<Language>("el");
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const t = translations[language];
 
   useEffect(() => {
@@ -48,23 +50,11 @@ function Index() {
     }
   }, []);
 
-  useEffect(() => {
-    const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.14 },
-    );
-
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
+  useRevealOnScroll(rootRef, {
+    selector: "[data-reveal]",
+    visibleClass: "is-visible",
+    threshold: 0.14,
+  });
 
   function changeLanguage(nextLanguage: Language) {
     setLanguage(nextLanguage);
@@ -73,7 +63,7 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-[#dfe7e9] text-[#0b2136]">
+    <div ref={rootRef} className="min-h-screen overflow-x-clip bg-[#dfe7e9] text-[#0b2136]">
       <Header t={t} language={language} onChangeLanguage={changeLanguage} />
       <main>
         <Hero t={t} onSectionClick={handleSectionClick} />

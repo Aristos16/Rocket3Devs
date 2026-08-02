@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import type { Map as LeafletMap } from "leaflet";
+
+import { useIsScrolled } from "../hooks/use-is-scrolled";
+import { useRevealOnScroll } from "../hooks/use-reveal-on-scroll";
+import "../styles/coffee-demo.css";
 
 export const Route = createFileRoute("/coffee-demo")({
   head: () => ({
@@ -161,110 +166,21 @@ const menuItems: MenuItem[] = [
 
 const markerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48" fill="none"><path d="M20 0C9 0 0 9 0 20c0 15 20 28 20 28s20-13 20-28C40 9 31 0 20 0z" fill="#4A703C"/><circle cx="20" cy="20" r="7" fill="#FDFCFA"/></svg>`;
 
-type LeafletIconOptions = {
-  iconUrl: string;
-  iconSize: [number, number];
-  iconAnchor: [number, number];
-  popupAnchor: [number, number];
-};
-
-type LeafletIcon = {
-  options?: unknown;
-};
-
-type LeafletMapOptions = {
-  center: [number, number];
-  zoom: number;
-  scrollWheelZoom: boolean;
-  zoomControl: boolean;
-};
-
-type LeafletMap = {
-  remove: () => void;
-  scrollWheelZoom: {
-    enable: () => void;
-    disable: () => void;
-  };
-};
-
-type LeafletTileOptions = {
-  attribution: string;
-  maxZoom: number;
-};
-
-type LeafletLayer = {
-  addTo: (map: LeafletMap) => LeafletLayer;
-};
-
-type LeafletMarker = {
-  addTo: (map: LeafletMap) => LeafletMarker & { bindPopup: (html: string) => unknown };
-};
-
-type LeafletLib = {
-  icon: (options: LeafletIconOptions) => LeafletIcon;
-  map: (element: HTMLElement, options: LeafletMapOptions) => LeafletMap;
-  tileLayer: (url: string, options: LeafletTileOptions) => LeafletLayer;
-  marker: (position: [number, number], options: { icon: LeafletIcon }) => LeafletMarker;
-};
-
-function getLeaflet(): LeafletLib | undefined {
-  return (window as Window & { L?: LeafletLib }).L;
-}
-
-function loadLeaflet(): Promise<LeafletLib> {
-  if (typeof window === "undefined") return Promise.reject(new Error("No window"));
-  const existing = getLeaflet();
-  if (existing) return Promise.resolve(existing);
-
-  if (!document.getElementById("coffee-leaflet-css")) {
-    const link = document.createElement("link");
-    link.id = "coffee-leaflet-css";
-    link.rel = "stylesheet";
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-    document.head.appendChild(link);
-  }
-
-  return new Promise((resolve, reject) => {
-    const oldScript = document.getElementById("coffee-leaflet-script") as HTMLScriptElement | null;
-
-    if (oldScript) {
-      oldScript.addEventListener(
-        "load",
-        () => {
-          const leaflet = getLeaflet();
-          if (leaflet) resolve(leaflet);
-          else reject(new Error("Leaflet failed to load"));
-        },
-        { once: true },
-      );
-      oldScript.addEventListener("error", () => reject(new Error("Leaflet failed to load")), {
-        once: true,
-      });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = "coffee-leaflet-script";
-    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-    script.async = true;
-    script.onload = () => {
-      const leaflet = getLeaflet();
-      if (leaflet) resolve(leaflet);
-      else reject(new Error("Leaflet failed to load"));
-    };
-    script.onerror = () => reject(new Error("Leaflet failed to load"));
-    document.body.appendChild(script);
-  });
-}
-
 function CoffeeDemo() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [mapRequested, setMapRequested] = useState(false);
+  const scrolled = useIsScrolled(20);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const navbarRef = useRef<HTMLElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
+
+  useRevealOnScroll(rootRef, {
+    selector: ".coffee-reveal",
+    visibleClass: "is-visible",
+    threshold: 0.1,
+  });
 
   const filteredItems =
     activeCategory === "All"
@@ -279,26 +195,7 @@ function CoffeeDemo() {
       document.body.classList.add("coffee-demo-preview");
     }
 
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("is-visible");
-        });
-      },
-      { threshold: 0.1 },
-    );
-
-    rootRef.current
-      ?.querySelectorAll(".coffee-reveal")
-      .forEach((element) => observer.observe(element));
-
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
       document.documentElement.classList.remove("coffee-demo-preview");
       document.body.classList.remove("coffee-demo-preview");
     };
@@ -309,11 +206,15 @@ function CoffeeDemo() {
     let createdMap: LeafletMap | null = null;
 
     async function initializeMap() {
-      if (!mapRef.current || mapInstanceRef.current) return;
+      const mapElement = mapRef.current;
+      if (!mapElement || mapInstanceRef.current) return;
 
       try {
-        const L = await loadLeaflet();
-        if (cancelled || !mapRef.current) return;
+        const L = await import("leaflet");
+        await import("leaflet/dist/leaflet.css");
+
+        const currentMapElement = mapRef.current;
+        if (cancelled || !currentMapElement) return;
 
         const icon = L.icon({
           iconUrl: `data:image/svg+xml,${encodeURIComponent(markerSvg)}`,
@@ -322,7 +223,7 @@ function CoffeeDemo() {
           popupAnchor: [0, -48],
         });
 
-        createdMap = L.map(mapRef.current, {
+        createdMap = L.map(currentMapElement, {
           center: [35.3387, 25.1442],
           zoom: 15,
           scrollWheelZoom: false,
@@ -359,11 +260,10 @@ function CoffeeDemo() {
     event.preventDefault();
     event.stopPropagation();
 
-    const section = rootRef.current?.querySelector<HTMLElement>(`#${sectionId}`);
+    const section = document.getElementById(sectionId);
     if (!section) return;
 
-    const navHeight =
-      rootRef.current?.querySelector(".coffee-navbar")?.getBoundingClientRect().height ?? 0;
+    const navHeight = navbarRef.current?.getBoundingClientRect().height ?? 0;
     const target = section.getBoundingClientRect().top + window.scrollY - navHeight - 8;
 
     window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
@@ -372,9 +272,7 @@ function CoffeeDemo() {
 
   return (
     <div ref={rootRef} className="coffee-demo">
-      <style>{coffeeStyles}</style>
-
-      <nav className={`coffee-navbar ${scrolled ? "is-scrolled" : ""}`}>
+      <nav ref={navbarRef} className={`coffee-navbar ${scrolled ? "is-scrolled" : ""}`}>
         <div className="coffee-container coffee-nav-container">
           <a
             href="#home"
@@ -668,227 +566,3 @@ function CoffeeDemo() {
     </div>
   );
 }
-
-// Demo CSS stays inline (route-scoped) on purpose, matching gym-demo. All
-// rules are scoped under `.coffee-*` classes and the preview-root rules only
-// target html/body while this route is mounted, so nothing leaks to the rest
-// of the site.
-const coffeeStyles = `
-  html.coffee-demo-preview,
-  body.coffee-demo-preview {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  html.coffee-demo-preview::-webkit-scrollbar,
-  body.coffee-demo-preview::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-
-  .coffee-demo {
-    --coffee-bg: #fdfcfa;
-    --coffee-surface: #f7f3ee;
-    --coffee-surface-alt: #ede5db;
-    --coffee-text: #5c5147;
-    --coffee-text-muted: #786d62;
-    --coffee-accent: #4a703c;
-    --coffee-accent-hover: #7aa36e;
-    --coffee-accent-soft: #daebd4;
-    --coffee-border: #e8e0d6;
-    --coffee-shadow-sm: 0 1px 3px rgba(92,81,71,.05);
-    --coffee-shadow-md: 0 10px 15px -3px rgba(92,81,71,.05), 0 4px 6px -2px rgba(92,81,71,.03);
-    --coffee-shadow-lg: 0 20px 25px -5px rgba(92,81,71,.06), 0 10px 10px -5px rgba(92,81,71,.02);
-    --coffee-radius: 16px;
-    min-height: 100vh;
-    overflow-x: hidden;
-    background: var(--coffee-bg);
-    color: var(--coffee-text);
-    font-family: "Inter", system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .coffee-demo *, .coffee-demo *::before, .coffee-demo *::after { box-sizing: border-box; }
-  .coffee-demo h1, .coffee-demo h2, .coffee-demo h3, .coffee-demo h4 {
-    margin: 0;
-    font-family: "Playfair Display", Georgia, serif;
-    font-weight: 600;
-    letter-spacing: -.02em;
-  }
-  .coffee-demo p { margin: 0; }
-  .coffee-demo a { color: inherit; text-decoration: none; }
-  .coffee-demo button { font: inherit; }
-  .coffee-demo img { display: block; max-width: 100%; }
-  .coffee-container { width: min(100% - 4rem, 1200px); margin-inline: auto; }
-
-  .coffee-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(253,252,250,.78);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent;
-    transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
-  }
-  .coffee-navbar.is-scrolled {
-    background: rgba(253,252,250,.96);
-    border-bottom-color: var(--coffee-border);
-    box-shadow: var(--coffee-shadow-sm);
-  }
-  .coffee-nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 80px;
-    transition: height .3s ease;
-  }
-  .coffee-navbar.is-scrolled .coffee-nav-container { height: 64px; }
-  .coffee-logo { font-family: "Playfair Display", serif; font-size: 1.6rem; font-weight: 700; }
-  .coffee-nav-links { display: flex; gap: 2.5rem; margin: 0; padding: 0; list-style: none; }
-  .coffee-nav-links a { position: relative; font-size: .95rem; font-weight: 500; transition: color .2s; }
-  .coffee-nav-links a:hover { color: var(--coffee-accent); }
-  .coffee-nav-links a::after {
-    content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 2px;
-    background: var(--coffee-accent); transition: width .3s ease;
-  }
-  .coffee-nav-links a:hover::after { width: 100%; }
-  .coffee-mobile-toggle { display: none; border: 0; background: transparent; color: var(--coffee-text); cursor: pointer; }
-  .coffee-mobile-menu {
-    display: none; flex-direction: column; gap: 1.5rem; max-height: 0; overflow: hidden;
-    padding: 0 2rem; background: var(--coffee-bg); border-bottom: 1px solid var(--coffee-border);
-    transition: max-height .3s ease, padding .3s ease;
-  }
-  .coffee-mobile-menu.is-open { max-height: 360px; padding: 2rem; }
-
-  .coffee-btn {
-    display: inline-flex; align-items: center; justify-content: center; padding: .9rem 2rem;
-    border: 1px solid transparent; border-radius: 999px; cursor: pointer; font-size: .95rem;
-    font-weight: 600; transition: transform .3s ease, background .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease;
-  }
-  .coffee-btn-primary { background: var(--coffee-accent); color: #fff !important; }
-  .coffee-btn-primary:hover { background: var(--coffee-accent-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(74,112,60,.22); }
-  .coffee-btn-outline { border-color: var(--coffee-border); background: transparent; color: var(--coffee-text); }
-  .coffee-btn-outline:hover { border-color: var(--coffee-accent); background: var(--coffee-accent-soft); color: var(--coffee-accent); }
-
-  .coffee-reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
-  .coffee-reveal.is-visible { opacity: 1; transform: translateY(0); }
-  .coffee-eyebrow {
-    display: inline-block; margin-bottom: 1rem; color: var(--coffee-accent); font-size: .875rem;
-    font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  }
-  .coffee-section-title { margin-bottom: 1rem !important; font-size: clamp(2rem,4vw,3rem); }
-  .coffee-section-subtitle { max-width: 500px; color: var(--coffee-text-muted); font-size: 1.1rem; }
-  .coffee-section-header { margin-bottom: 2.5rem; text-align: center; }
-  .coffee-section-header .coffee-section-subtitle { margin-inline: auto; }
-
-  .coffee-hero { padding: 5rem 0 2rem; overflow: hidden; }
-  .coffee-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .coffee-hero-content h1 { margin-bottom: 1.5rem; font-size: clamp(2.5rem,5vw,4rem); line-height: 1.1; }
-  .coffee-accent-text { color: var(--coffee-accent); font-style: italic; }
-  .coffee-hero-content > p { max-width: 500px; margin-bottom: 2.5rem; color: var(--coffee-text-muted); font-size: 1.2rem; }
-  .coffee-hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
-  .coffee-hero-image-wrap { position: relative; height: 550px; border-radius: var(--coffee-radius); }
-  .coffee-hero-image-bg { position: absolute; inset: 20px -20px -20px 20px; border-radius: var(--coffee-radius); background: var(--coffee-accent-soft); }
-  .coffee-hero-image { position: relative; width: 100%; height: 100%; border-radius: var(--coffee-radius); object-fit: cover; box-shadow: var(--coffee-shadow-lg); }
-
-  .coffee-features-strip { padding: 4rem 0; border-block: 1px solid var(--coffee-border); background: var(--coffee-surface); }
-  .coffee-features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3rem; }
-  .coffee-feature-item h2 { margin-bottom: .5rem; font-size: 1.2rem; }
-  .coffee-feature-item p { color: var(--coffee-text-muted); font-size: .95rem; }
-
-  .coffee-menu-section { padding: 6rem 0; background: var(--coffee-bg); }
-  .coffee-menu-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-bottom: 3rem; }
-  .coffee-menu-tab {
-    padding: .6rem 1.5rem; border: 1px solid var(--coffee-border); border-radius: 999px;
-    background: transparent; color: var(--coffee-text-muted); cursor: pointer; font-size: .9rem;
-    font-weight: 500; transition: all .3s ease;
-  }
-  .coffee-menu-tab:hover { border-color: var(--coffee-accent); color: var(--coffee-accent); }
-  .coffee-menu-tab.is-active { border-color: var(--coffee-accent); background: var(--coffee-accent); color: #fff; }
-  .coffee-menu-items { display: flex; max-width: 680px; margin: 0 auto; flex-direction: column; gap: .25rem; }
-  .coffee-menu-item {
-    display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem;
-    padding: 1.25rem 1.5rem; border-radius: 12px; transition: background .3s ease;
-  }
-  .coffee-menu-item:hover { background: var(--coffee-surface); }
-  .coffee-menu-item:not(:last-child) { border-bottom: 1px solid var(--coffee-border); }
-  .coffee-menu-item-info { flex: 1; }
-  .coffee-menu-item-head { display: flex; align-items: center; gap: .75rem; margin-bottom: .3rem; }
-  .coffee-menu-item-name { font-family: "Playfair Display", serif; font-size: 1.15rem; font-weight: 600; }
-  .coffee-popular-badge {
-    padding: .15rem .6rem; border-radius: 999px; background: var(--coffee-accent-soft);
-    color: var(--coffee-accent); font-size: .65rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
-  }
-  .coffee-menu-item-desc { color: var(--coffee-text-muted); font-size: .9rem; }
-  .coffee-menu-item-price { padding-top: .15rem; color: var(--coffee-text); font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
-
-  .coffee-about-section { padding: 6rem 0; border-block: 1px solid var(--coffee-border); background: var(--coffee-surface); }
-  .coffee-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .coffee-about-image-wrap img { width: 100%; height: 500px; border-radius: var(--coffee-radius); object-fit: cover; box-shadow: var(--coffee-shadow-md); }
-  .coffee-about-content { display: flex; flex-direction: column; }
-  .coffee-about-content p { margin-bottom: 1.5rem; color: var(--coffee-text-muted); font-size: 1.1rem; }
-  .coffee-about-button { align-self: flex-start; margin-top: 1rem; }
-
-  .coffee-map-section { padding: 6rem 0; border-bottom: 1px solid var(--coffee-border); background: var(--coffee-surface); }
-  .coffee-map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .coffee-map-info { display: flex; flex-direction: column; gap: 1.5rem; }
-  .coffee-map-info .coffee-eyebrow { margin-bottom: -.75rem; }
-  .coffee-map-info .coffee-section-title { max-width: 300px; }
-  .coffee-info-block h3 {
-    margin-bottom: .4rem; color: var(--coffee-accent); font-family: "Inter",sans-serif;
-    font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-  }
-  .coffee-info-block p { color: var(--coffee-text); font-size: 1rem; line-height: 1.7; }
-  .coffee-map-button { align-self: flex-start; }
-  .coffee-map-wrap { position: relative; overflow: hidden; aspect-ratio: 4/3; border: 1px solid var(--coffee-border); border-radius: var(--coffee-radius); box-shadow: var(--coffee-shadow-lg); }
-  .coffee-map-container { width: 100%; height: 100%; z-index: 1; }
-  .coffee-map-container .leaflet-control-attribution { opacity: .55; font-size: .6rem; }
-  .coffee-map-container .leaflet-control-zoom { display: none; }
-  .coffee-map-overlay {
-    position: absolute; inset: 0; z-index: 2;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem;
-    background: linear-gradient(180deg, #e8e4df 0%, #d9d4ce 100%);
-    color: #6b655f;
-    border: none; cursor: pointer;
-    transition: background .25s ease, color .25s ease;
-  }
-  .coffee-map-overlay:hover { background: linear-gradient(180deg, #e2ded8 0%, #d2ccc5 100%); color: #554f49; }
-  .coffee-map-overlay:focus-visible { outline: 2px solid var(--coffee-accent); outline-offset: -2px; }
-  .coffee-map-overlay-icon { width: 34px; height: 34px; opacity: .7; }
-  .coffee-map-overlay span {
-    font-family: "Inter", sans-serif; font-size: .85rem; font-weight: 600;
-    letter-spacing: .04em; text-transform: uppercase;
-  }
-
-  .coffee-footer { padding: 2rem 0; background: var(--coffee-bg); }
-  .coffee-footer-bottom { padding-top: 2rem; border-top: 1px solid var(--coffee-border); text-align: center; }
-  .coffee-footer-bottom p { color: var(--coffee-text-muted); font-size: .85rem; }
-
-  @media (max-width: 900px) {
-    .coffee-hero-grid, .coffee-about-grid, .coffee-map-grid { grid-template-columns: 1fr; }
-    .coffee-hero-image-wrap { height: 400px; margin-top: 2rem; }
-    .coffee-features-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .coffee-map-grid { gap: 2rem; }
-    .coffee-map-wrap { aspect-ratio: 16/10; }
-  }
-  @media (max-width: 768px) {
-    .coffee-container { width: min(100% - 2rem, 1200px); }
-    .coffee-nav-links, .coffee-nav-cta { display: none; }
-    .coffee-mobile-toggle { display: block; }
-    .coffee-mobile-menu { display: flex; }
-    .coffee-hero { padding-top: 3.5rem; }
-    .coffee-menu-section, .coffee-about-section, .coffee-map-section { padding: 4.5rem 0; }
-  }
-  @media (max-width: 600px) {
-    .coffee-hero-image-wrap { height: 330px; }
-    .coffee-hero-image-bg { inset: 12px -12px -12px 12px; }
-    .coffee-hero-actions .coffee-btn { width: 100%; }
-    .coffee-menu-item { padding: 1.1rem 0; }
-    .coffee-menu-item-desc { padding-right: .5rem; }
-    .coffee-about-image-wrap img { height: 360px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .coffee-demo *, .coffee-demo *::before, .coffee-demo *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
-    .coffee-reveal { opacity: 1; transform: none; }
-  }
-`;
