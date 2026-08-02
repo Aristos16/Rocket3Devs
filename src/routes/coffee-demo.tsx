@@ -1,10 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type MouseEvent as ReactMouseEvent,
-} from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 export const Route = createFileRoute("/coffee-demo")({
   head: () => ({
@@ -12,8 +7,7 @@ export const Route = createFileRoute("/coffee-demo")({
       { title: "Brewhaus Coffee | Crafted with Intention" },
       {
         name: "description",
-        content:
-          "A minimalist coffee shop demo with a full menu, story, and interactive map.",
+        content: "A minimalist coffee shop demo with a full menu, story, and interactive map.",
       },
     ],
     links: [
@@ -65,27 +59,161 @@ const features = [
 const categories = ["All", "Espresso", "Filter", "Pastries", "Seasonal"];
 
 const menuItems: MenuItem[] = [
-  { name: "Flat White", category: "Espresso", description: "Double shot with velvety microfoam.", price: "$4.50", popular: true },
-  { name: "Cappuccino", category: "Espresso", description: "Rich espresso with airy milk foam.", price: "$4.00", popular: false },
-  { name: "Latte", category: "Espresso", description: "Smooth espresso with steamed milk.", price: "$4.50", popular: false },
-  { name: "Macchiato", category: "Espresso", description: "Espresso marked with a dollop of foam.", price: "$3.50", popular: true },
-  { name: "Espresso", category: "Espresso", description: "Single-origin, pulled to perfection.", price: "$3.00", popular: false },
-  { name: "Pour Over", category: "Filter", description: "Single-origin, hand-poured to order.", price: "$5.00", popular: true },
-  { name: "Cold Brew", category: "Filter", description: "18-hour steep for smooth sweetness.", price: "$5.00", popular: false },
-  { name: "AeroPress", category: "Filter", description: "Clean, bright, and full of character.", price: "$4.50", popular: false },
-  { name: "Croissant", category: "Pastries", description: "Buttery, flaky, baked fresh daily.", price: "$3.50", popular: false },
-  { name: "Banana Bread", category: "Pastries", description: "Warm, moist, served with honey butter.", price: "$4.00", popular: true },
-  { name: "Brownie", category: "Pastries", description: "Dark chocolate, sea salt, fudgy center.", price: "$3.50", popular: false },
-  { name: "Pumpkin Spice Latte", category: "Seasonal", description: "Warm spices, real pumpkin, espresso.", price: "$5.50", popular: true },
-  { name: "Iced Maple Latte", category: "Seasonal", description: "Cold brew with maple and oat milk.", price: "$5.50", popular: false },
-  { name: "Chai Latte", category: "Seasonal", description: "House-spiced, steamed oat milk.", price: "$5.00", popular: false },
+  {
+    name: "Flat White",
+    category: "Espresso",
+    description: "Double shot with velvety microfoam.",
+    price: "$4.50",
+    popular: true,
+  },
+  {
+    name: "Cappuccino",
+    category: "Espresso",
+    description: "Rich espresso with airy milk foam.",
+    price: "$4.00",
+    popular: false,
+  },
+  {
+    name: "Latte",
+    category: "Espresso",
+    description: "Smooth espresso with steamed milk.",
+    price: "$4.50",
+    popular: false,
+  },
+  {
+    name: "Macchiato",
+    category: "Espresso",
+    description: "Espresso marked with a dollop of foam.",
+    price: "$3.50",
+    popular: true,
+  },
+  {
+    name: "Espresso",
+    category: "Espresso",
+    description: "Single-origin, pulled to perfection.",
+    price: "$3.00",
+    popular: false,
+  },
+  {
+    name: "Pour Over",
+    category: "Filter",
+    description: "Single-origin, hand-poured to order.",
+    price: "$5.00",
+    popular: true,
+  },
+  {
+    name: "Cold Brew",
+    category: "Filter",
+    description: "18-hour steep for smooth sweetness.",
+    price: "$5.00",
+    popular: false,
+  },
+  {
+    name: "AeroPress",
+    category: "Filter",
+    description: "Clean, bright, and full of character.",
+    price: "$4.50",
+    popular: false,
+  },
+  {
+    name: "Croissant",
+    category: "Pastries",
+    description: "Buttery, flaky, baked fresh daily.",
+    price: "$3.50",
+    popular: false,
+  },
+  {
+    name: "Banana Bread",
+    category: "Pastries",
+    description: "Warm, moist, served with honey butter.",
+    price: "$4.00",
+    popular: true,
+  },
+  {
+    name: "Brownie",
+    category: "Pastries",
+    description: "Dark chocolate, sea salt, fudgy center.",
+    price: "$3.50",
+    popular: false,
+  },
+  {
+    name: "Pumpkin Spice Latte",
+    category: "Seasonal",
+    description: "Warm spices, real pumpkin, espresso.",
+    price: "$5.50",
+    popular: true,
+  },
+  {
+    name: "Iced Maple Latte",
+    category: "Seasonal",
+    description: "Cold brew with maple and oat milk.",
+    price: "$5.50",
+    popular: false,
+  },
+  {
+    name: "Chai Latte",
+    category: "Seasonal",
+    description: "House-spiced, steamed oat milk.",
+    price: "$5.00",
+    popular: false,
+  },
 ];
 
 const markerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48" fill="none"><path d="M20 0C9 0 0 9 0 20c0 15 20 28 20 28s20-13 20-28C40 9 31 0 20 0z" fill="#4A703C"/><circle cx="20" cy="20" r="7" fill="#FDFCFA"/></svg>`;
 
-function loadLeaflet(): Promise<any> {
+type LeafletIconOptions = {
+  iconUrl: string;
+  iconSize: [number, number];
+  iconAnchor: [number, number];
+  popupAnchor: [number, number];
+};
+
+type LeafletIcon = {
+  options?: unknown;
+};
+
+type LeafletMapOptions = {
+  center: [number, number];
+  zoom: number;
+  scrollWheelZoom: boolean;
+  zoomControl: boolean;
+};
+
+type LeafletMap = {
+  remove: () => void;
+  scrollWheelZoom: {
+    enable: () => void;
+    disable: () => void;
+  };
+};
+
+type LeafletTileOptions = {
+  attribution: string;
+  maxZoom: number;
+};
+
+type LeafletLayer = {
+  addTo: (map: LeafletMap) => LeafletLayer;
+};
+
+type LeafletMarker = {
+  addTo: (map: LeafletMap) => LeafletMarker & { bindPopup: (html: string) => unknown };
+};
+
+type LeafletLib = {
+  icon: (options: LeafletIconOptions) => LeafletIcon;
+  map: (element: HTMLElement, options: LeafletMapOptions) => LeafletMap;
+  tileLayer: (url: string, options: LeafletTileOptions) => LeafletLayer;
+  marker: (position: [number, number], options: { icon: LeafletIcon }) => LeafletMarker;
+};
+
+function getLeaflet(): LeafletLib | undefined {
+  return (window as Window & { L?: LeafletLib }).L;
+}
+
+function loadLeaflet(): Promise<LeafletLib> {
   if (typeof window === "undefined") return Promise.reject(new Error("No window"));
-  const existing = (window as any).L;
+  const existing = getLeaflet();
   if (existing) return Promise.resolve(existing);
 
   if (!document.getElementById("coffee-leaflet-css")) {
@@ -97,14 +225,18 @@ function loadLeaflet(): Promise<any> {
   }
 
   return new Promise((resolve, reject) => {
-    const oldScript = document.getElementById(
-      "coffee-leaflet-script",
-    ) as HTMLScriptElement | null;
+    const oldScript = document.getElementById("coffee-leaflet-script") as HTMLScriptElement | null;
 
     if (oldScript) {
-      oldScript.addEventListener("load", () => resolve((window as any).L), {
-        once: true,
-      });
+      oldScript.addEventListener(
+        "load",
+        () => {
+          const leaflet = getLeaflet();
+          if (leaflet) resolve(leaflet);
+          else reject(new Error("Leaflet failed to load"));
+        },
+        { once: true },
+      );
       oldScript.addEventListener("error", () => reject(new Error("Leaflet failed to load")), {
         once: true,
       });
@@ -115,7 +247,11 @@ function loadLeaflet(): Promise<any> {
     script.id = "coffee-leaflet-script";
     script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
     script.async = true;
-    script.onload = () => resolve((window as any).L);
+    script.onload = () => {
+      const leaflet = getLeaflet();
+      if (leaflet) resolve(leaflet);
+      else reject(new Error("Leaflet failed to load"));
+    };
     script.onerror = () => reject(new Error("Leaflet failed to load"));
     document.body.appendChild(script);
   });
@@ -128,7 +264,7 @@ function CoffeeDemo() {
   const [mapRequested, setMapRequested] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any>(null);
+  const mapInstanceRef = useRef<LeafletMap | null>(null);
 
   const filteredItems =
     activeCategory === "All"
@@ -136,8 +272,7 @@ function CoffeeDemo() {
       : menuItems.filter((item) => item.category === activeCategory);
 
   useEffect(() => {
-    const isEmbeddedPreview =
-      new URLSearchParams(window.location.search).get("preview") === "1";
+    const isEmbeddedPreview = new URLSearchParams(window.location.search).get("preview") === "1";
 
     if (isEmbeddedPreview) {
       document.documentElement.classList.add("coffee-demo-preview");
@@ -171,7 +306,7 @@ function CoffeeDemo() {
 
   useEffect(() => {
     let cancelled = false;
-    let createdMap: any = null;
+    let createdMap: LeafletMap | null = null;
 
     async function initializeMap() {
       if (!mapRef.current || mapInstanceRef.current) return;
@@ -220,10 +355,7 @@ function CoffeeDemo() {
     };
   }, [mapRequested]);
 
-  function scrollToSection(
-    event: ReactMouseEvent<HTMLAnchorElement>,
-    sectionId: string,
-  ) {
+  function scrollToSection(event: ReactMouseEvent<HTMLAnchorElement>, sectionId: string) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -231,11 +363,8 @@ function CoffeeDemo() {
     if (!section) return;
 
     const navHeight =
-      rootRef.current
-        ?.querySelector(".coffee-navbar")
-        ?.getBoundingClientRect().height ?? 0;
-    const target =
-      section.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+      rootRef.current?.querySelector(".coffee-navbar")?.getBoundingClientRect().height ?? 0;
+    const target = section.getBoundingClientRect().top + window.scrollY - navHeight - 8;
 
     window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
     setMenuOpen(false);
@@ -247,7 +376,11 @@ function CoffeeDemo() {
 
       <nav className={`coffee-navbar ${scrolled ? "is-scrolled" : ""}`}>
         <div className="coffee-container coffee-nav-container">
-          <a href="#home" className="coffee-logo" onClick={(event) => scrollToSection(event, "home")}>
+          <a
+            href="#home"
+            className="coffee-logo"
+            onClick={(event) => scrollToSection(event, "home")}
+          >
             Brewhaus
           </a>
 
@@ -261,7 +394,11 @@ function CoffeeDemo() {
             ))}
           </ul>
 
-          <a href="#menu" className="coffee-btn coffee-btn-primary coffee-nav-cta" onClick={(event) => scrollToSection(event, "menu")}>
+          <a
+            href="#menu"
+            className="coffee-btn coffee-btn-primary coffee-nav-cta"
+            onClick={(event) => scrollToSection(event, "menu")}
+          >
             Order Now
           </a>
 
@@ -273,11 +410,25 @@ function CoffeeDemo() {
             onClick={() => setMenuOpen((value) => !value)}
           >
             {menuOpen ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M3 6h18M3 12h18M3 18h18" />
               </svg>
             )}
@@ -286,11 +437,19 @@ function CoffeeDemo() {
 
         <div className={`coffee-mobile-menu ${menuOpen ? "is-open" : ""}`}>
           {navLinks.map((link) => (
-            <a key={link.id} href={`#${link.id}`} onClick={(event) => scrollToSection(event, link.id)}>
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              onClick={(event) => scrollToSection(event, link.id)}
+            >
               {link.name}
             </a>
           ))}
-          <a href="#menu" className="coffee-btn coffee-btn-primary" onClick={(event) => scrollToSection(event, "menu")}>
+          <a
+            href="#menu"
+            className="coffee-btn coffee-btn-primary"
+            onClick={(event) => scrollToSection(event, "menu")}
+          >
             Order Now
           </a>
         </div>
@@ -307,14 +466,22 @@ function CoffeeDemo() {
                 <span className="coffee-accent-text">Minimalist Soul</span>
               </h1>
               <p>
-                Sourced from the finest farms, roasted in-house, and served in a
-                space designed for you to slow down.
+                Sourced from the finest farms, roasted in-house, and served in a space designed for
+                you to slow down.
               </p>
               <div className="coffee-hero-actions">
-                <a href="#menu" className="coffee-btn coffee-btn-primary" onClick={(event) => scrollToSection(event, "menu")}>
+                <a
+                  href="#menu"
+                  className="coffee-btn coffee-btn-primary"
+                  onClick={(event) => scrollToSection(event, "menu")}
+                >
                   Explore Menu
                 </a>
-                <a href="#about" className="coffee-btn coffee-btn-outline" onClick={(event) => scrollToSection(event, "about")}>
+                <a
+                  href="#about"
+                  className="coffee-btn coffee-btn-outline"
+                  onClick={(event) => scrollToSection(event, "about")}
+                >
                   Our Story
                 </a>
               </div>
@@ -405,16 +572,20 @@ function CoffeeDemo() {
               <span className="coffee-eyebrow">Our Philosophy</span>
               <h2 className="coffee-section-title">Brewed with Intention</h2>
               <p>
-                At Brewhaus, we believe that great coffee doesn&apos;t need to be
-                complicated. We focus on the essentials: high-quality beans,
-                precise extraction, and a welcoming space.
+                At Brewhaus, we believe that great coffee doesn&apos;t need to be complicated. We
+                focus on the essentials: high-quality beans, precise extraction, and a welcoming
+                space.
               </p>
               <p>
-                Our minimalist approach extends to our cafes—clean lines,
-                natural light, and plenty of room to think. We&apos;re not just
-                serving coffee; we&apos;re cultivating a moment of pause.
+                Our minimalist approach extends to our cafes—clean lines, natural light, and plenty
+                of room to think. We&apos;re not just serving coffee; we&apos;re cultivating a
+                moment of pause.
               </p>
-              <a href="#visit" className="coffee-btn coffee-btn-primary coffee-about-button" onClick={(event) => scrollToSection(event, "visit")}>
+              <a
+                href="#visit"
+                className="coffee-btn coffee-btn-primary coffee-about-button"
+                onClick={(event) => scrollToSection(event, "visit")}
+              >
                 Visit Us
               </a>
             </div>
@@ -498,6 +669,10 @@ function CoffeeDemo() {
   );
 }
 
+// Demo CSS stays inline (route-scoped) on purpose, matching gym-demo. All
+// rules are scoped under `.coffee-*` classes and the preview-root rules only
+// target html/body while this route is mounted, so nothing leaks to the rest
+// of the site.
 const coffeeStyles = `
   html.coffee-demo-preview,
   body.coffee-demo-preview {

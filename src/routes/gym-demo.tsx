@@ -15,569 +15,12 @@ export const Route = createFileRoute("/gym-demo")({
   component: BlueCoreGymDemo,
 });
 
-const gymMarkup = String.raw`
+// The demo CSS stays inline (route-scoped) on purpose. It uses generic
+// selectors (.container, .header, .hero, .button, .section...) and redefines
+// :root variables (--accent, --border, --muted...) that the main site also
+// uses. Mounted inside this route only, the <style> tag is removed on
+// navigation; a global stylesheet would repaint the whole site.
 
-  <!-- Header / Μενού -->
-  <header class="header">
-    <div class="container navbar">
-
-      <a href="#home" class="logo">
-        BLUE<span>CORE</span>
-      </a>
-
-      <button
-        class="menu-button"
-        id="menuButton"
-        type="button"
-        aria-label="Άνοιγμα μενού"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-
-      <nav class="navigation" id="navigation">
-        <ul class="nav-list">
-          <li><a href="#home">Αρχική</a></li>
-          <li><a href="#programs">Προγράμματα</a></li>
-          <li><a href="#about">Σχετικά</a></li>
-          <li><a href="#pricing">Συνδρομές</a></li>
-          <li><a href="#reviews">Αξιολογήσεις</a></li>
-          <li><a href="#contact">Επικοινωνία</a></li>
-        </ul>
-      </nav>
-
-    </div>
-  </header>
-
-
-  <main>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-      <div class="container hero-content">
-
-        <p class="hero-label">BLUECORE GYM</p>
-
-        <h1>
-          Ξεπέρασε τα
-          <span>όριά σου</span>
-        </h1>
-
-        <p class="hero-text">
-          Σύγχρονος εξοπλισμός, έμπειροι trainers και προγράμματα
-          που θα σε βοηθήσουν να πετύχεις κάθε στόχο.
-        </p>
-
-        <div class="hero-buttons">
-          <a href="#pricing" class="button button-primary">
-            Ξεκίνα σήμερα
-          </a>
-
-          <a href="#programs" class="button button-secondary">
-            Δες τα προγράμματα
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Quick Information -->
-    <section class="trust-bar" aria-label="Πληροφορίες γυμναστηρίου">
-    <div class="container trust-grid">
-
-        <div class="trust-item">
-        <strong>06:00 – 23:00</strong>
-        <span>Καθημερινό ωράριο</span>
-        </div>
-
-        <div class="trust-item">
-        <strong>Δωρεάν</strong>
-        <span>Πρώτη δοκιμαστική προπόνηση</span>
-        </div>
-
-        <div class="trust-item">
-        <strong>10+</strong>
-        <span>Πιστοποιημένοι trainers</span>
-        </div>
-
-    </div>
-    </section>
-
-
-    <!-- Programs Section -->
-    <section class="section programs" id="programs">
-      <div class="container">
-
-        <div class="section-heading">
-          <p class="section-label">ΠΡΟΠΟΝΗΣΗ</p>
-          <h2>Τα προγράμματά μας</h2>
-
-          <p>
-            Επίλεξε το πρόγραμμα που ταιριάζει στις ανάγκες
-            και στους στόχους σου.
-          </p>
-        </div>
-
-        <div class="program-grid">
-
-          <article class="program-card">
-            <div class="program-icon">🏋️</div>
-
-            <h3>Μυϊκή ενδυνάμωση</h3>
-
-            <p>
-              Προπόνηση με ελεύθερα βάρη και σύγχρονα μηχανήματα
-              για δύναμη και μυϊκή ανάπτυξη.
-            </p>
-
-            <a href="#contact">Μάθε περισσότερα →</a>
-          </article>
-
-
-          <article class="program-card">
-            <div class="program-icon">🔥</div>
-
-            <h3>Cross Training</h3>
-
-            <p>
-              Δυναμικές προπονήσεις υψηλής έντασης για αντοχή,
-              ταχύτητα και καλύτερη φυσική κατάσταση.
-            </p>
-
-            <a href="#contact">Μάθε περισσότερα →</a>
-          </article>
-
-
-          <article class="program-card">
-            <div class="program-icon">🧘</div>
-
-            <h3>Yoga & Mobility</h3>
-
-            <p>
-              Ασκήσεις για ευλυγισία, ισορροπία, κινητικότητα
-              και καλύτερη αποκατάσταση.
-            </p>
-
-            <a href="#contact">Μάθε περισσότερα →</a>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-
-    <!-- About Section -->
-    <section class="section about" id="about">
-      <div class="container about-grid">
-
-        <div class="about-image">
-          <img
-            src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1000&q=80"
-            alt="Άτομο που γυμνάζεται στο γυμναστήριο"
-          >
-        </div>
-
-        <div class="about-content">
-
-          <p class="section-label">ΣΧΕΤΙΚΑ ΜΕ ΕΜΑΣ</p>
-
-          <h2>
-            Ένας χώρος σχεδιασμένος για κάθε στόχο
-          </h2>
-
-          <p>
-            Στο BlueCore Gym πιστεύουμε ότι η συνέπεια και η σωστή
-            καθοδήγηση μπορούν να φέρουν πραγματικά αποτελέσματα.
-          </p>
-
-          <p>
-            Ο χώρος μας διαθέτει σύγχρονο εξοπλισμό και εξειδικευμένους
-            trainers για αρχάριους και προχωρημένους.
-          </p>
-
-          <div class="about-stats">
-
-            <div class="stat">
-              <strong>500+</strong>
-              <span>Μέλη</span>
-            </div>
-
-            <div class="stat">
-              <strong>10+</strong>
-              <span>Trainers</span>
-            </div>
-
-            <div class="stat">
-              <strong>20+</strong>
-              <span>Προγράμματα</span>
-            </div>
-
-          </div>
-
-          <a href="#contact" class="button button-primary">
-            Επικοινώνησε μαζί μας
-          </a>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Video Section -->
-    <section class="section gym-video-section" id="experience">
-      <div class="container video-grid">
-
-        <div class="video-wrapper">
-
-          <video
-            id="gymVideo"
-            muted
-            loop
-            playsinline
-            preload="none"
-          >
-            <source src="/Videos/gym.mp4" type="video/mp4">
-
-            Ο browser σου δεν υποστηρίζει βίντεο.
-          </video>
-
-          <div class="video-overlay"></div>
-
-          <button
-            class="video-button"
-            id="videoButton"
-            type="button"
-            aria-label="Παύση βίντεο"
-          >
-            Ⅱ
-          </button>
-
-          <div class="video-label">
-            BLUECORE EXPERIENCE
-          </div>
-
-        </div>
-
-
-        <div class="video-content">
-
-          <p class="section-label">Η ΕΜΠΕΙΡΙΑ BLUECORE</p>
-
-          <h2>
-            Ένας χώρος που σε βοηθά να ξεπεράσεις τα όριά σου
-          </h2>
-
-          <p>
-            Σύγχρονος επαγγελματικός εξοπλισμός, οργανωμένοι χώροι
-            και εξειδικευμένοι trainers για κάθε επίπεδο προπόνησης.
-          </p>
-
-          <ul class="video-list">
-            <li>Επαγγελματικός εξοπλισμός</li>
-            <li>Καθαροί και σύγχρονοι χώροι</li>
-            <li>Πιστοποιημένοι trainers</li>
-            <li>Προγράμματα για κάθε επίπεδο</li>
-          </ul>
-
-          <a href="#contact" class="button button-primary">
-            Κλείσε δωρεάν δοκιμή
-          </a>
-
-        </div>
-
-      </div>
-    </section>
-    <!-- Pricing Section -->
-    <section class="section pricing" id="pricing">
-      <div class="container">
-
-        <div class="section-heading">
-          <p class="section-label">ΣΥΝΔΡΟΜΕΣ</p>
-          <h2>Διάλεξε το πακέτο σου</h2>
-
-          <p>
-            Ευέλικτα πακέτα συνδρομών, χωρίς περίπλοκες χρεώσεις.
-          </p>
-        </div>
-
-        <div class="pricing-grid">
-
-          <article class="pricing-card">
-            <h3>Basic</h3>
-
-            <p class="price">
-              25€ <span>/ μήνα</span>
-            </p>
-
-            <ul>
-              <li>✓ Πρόσβαση στον χώρο οργάνων</li>
-              <li>✓ Χρήση αποδυτηρίων</li>
-              <li>✓ Δωρεάν αρχική αξιολόγηση</li>
-              <li>✕ Ομαδικά προγράμματα</li>
-            </ul>
-
-            <a href="#contact" class="button button-secondary">
-              Επίλεξε πακέτο
-            </a>
-          </article>
-
-
-          <article class="pricing-card featured">
-
-            <p class="popular-label">ΔΗΜΟΦΙΛΕΣ</p>
-
-            <h3>Unlimited</h3>
-
-            <p class="price">
-              39€ <span>/ μήνα</span>
-            </p>
-
-            <ul>
-              <li>✓ Απεριόριστη πρόσβαση</li>
-              <li>✓ Όλα τα ομαδικά προγράμματα</li>
-              <li>✓ Πρόγραμμα προπόνησης</li>
-              <li>✓ Μηνιαία αξιολόγηση</li>
-            </ul>
-
-            <a href="#contact" class="button button-primary">
-              Επίλεξε πακέτο
-            </a>
-          </article>
-
-
-          <article class="pricing-card">
-            <h3>Personal</h3>
-
-            <p class="price">
-              69€ <span>/ μήνα</span>
-            </p>
-
-            <ul>
-              <li>✓ Όλες οι παροχές Unlimited</li>
-              <li>✓ Personal training</li>
-              <li>✓ Εξατομικευμένο πρόγραμμα</li>
-              <li>✓ Διατροφική καθοδήγηση</li>
-            </ul>
-
-            <a href="#contact" class="button button-secondary">
-              Επίλεξε πακέτο
-            </a>
-          </article>
-
-        </div>
-      </div>
-    </section>
-    <!-- Reviews Section -->
-    <section class="section reviews" id="reviews">
-    <div class="container">
-
-        <div class="section-heading">
-        <p class="section-label">ΑΞΙΟΛΟΓΗΣΕΙΣ</p>
-        <h2>Τι λένε τα μέλη μας</h2>
-
-        <p>
-            Μερικές ενδεικτικές αξιολογήσεις για το demo της ιστοσελίδας.
-        </p>
-        </div>
-
-        <div class="reviews-grid">
-
-        <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-
-            <p class="review-text">
-            «Πολύ καθαρός χώρος, σύγχρονα μηχανήματα και εξαιρετική
-            καθοδήγηση από τους trainers.»
-            </p>
-
-            <div class="review-person">
-            <div class="review-avatar">ΜΚ</div>
-
-            <div>
-                <h3>Μαρία Κ.</h3>
-                <span>Μέλος για 8 μήνες</span>
-            </div>
-            </div>
-        </article>
-
-
-        <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-
-            <p class="review-text">
-            «Τα ομαδικά προγράμματα έχουν πολλή ενέργεια και με βοήθησαν
-            να αποκτήσω συνέπεια στην προπόνησή μου.»
-            </p>
-
-            <div class="review-person">
-            <div class="review-avatar">ΝΠ</div>
-
-            <div>
-                <h3>Νίκος Π.</h3>
-                <span>Μέλος για 1 χρόνο</span>
-            </div>
-            </div>
-        </article>
-
-
-        <article class="review-card">
-            <div class="review-stars">★★★★★</div>
-
-            <p class="review-text">
-            «Φιλικό περιβάλλον και πολύ καλή εξυπηρέτηση. Το πρόγραμμα
-            προπόνησης προσαρμόστηκε ακριβώς στους στόχους μου.»
-            </p>
-
-            <div class="review-person">
-            <div class="review-avatar">ΕΔ</div>
-
-            <div>
-                <h3>Ελένη Δ.</h3>
-                <span>Μέλος για 6 μήνες</span>
-            </div>
-            </div>
-        </article>
-
-        </div>
-    </div>
-    </section>
-
-
-    <!-- Contact Section -->
-    <section class="section contact" id="contact">
-    <div class="container contact-grid">
-
-        <div class="contact-info">
-
-        <p class="section-label">ΕΠΙΚΟΙΝΩΝΙΑ</p>
-
-        <h2>Κλείσε τη δωρεάν δοκιμή σου</h2>
-
-        <p>
-            Συμπλήρωσε τη φόρμα και η ομάδα μας θα επικοινωνήσει
-            μαζί σου το συντομότερο δυνατό.
-        </p>
-
-        <div class="contact-details">
-
-            <p>
-            <strong>Διεύθυνση:</strong>
-            Πλατεία Ελευθερίας 12, Ηράκλειο Κρήτης
-            </p>
-
-            <p>
-            <strong>Τηλέφωνο:</strong>
-            2810 123 456
-            </p>
-
-            <p>
-            <strong>Email:</strong>
-            info@bluecoregym.gr
-            </p>
-
-            <p>
-            <strong>Ωράριο:</strong>
-            Δευτέρα – Κυριακή, 06:00 – 23:00
-            </p>
-
-            <div class="contact-map">
-            <iframe
-                src="https://www.google.com/maps?q=Πλατεία+Ελευθερίας,+Ηράκλειο,+Κρήτη&output=embed"
-                title="Τοποθεσία BlueCore Gym στο Ηράκλειο Κρήτης"
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-            </div>
-
-        </div>
-        </div>
-
-
-        <form class="contact-form" id="contactForm">
-
-        <div class="form-group">
-            <label for="name">Ονοματεπώνυμο</label>
-
-            <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Γράψε το όνομά σου"
-            required
-            >
-        </div>
-
-
-        <div class="form-group">
-            <label for="email">Email</label>
-
-            <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="example@email.com"
-            required
-            >
-        </div>
-
-
-        <div class="form-group">
-            <label for="phone">Τηλέφωνο</label>
-
-            <input
-            type="tel"
-            id="phone"
-            name="phone"
-            placeholder="69XXXXXXXX"
-            >
-        </div>
-
-
-        <div class="form-group">
-            <label for="message">Μήνυμα</label>
-
-            <textarea
-            id="message"
-            name="message"
-            rows="5"
-            placeholder="Πες μας ποιο πρόγραμμα σε ενδιαφέρει"
-            ></textarea>
-        </div>
-
-
-        <button type="submit" class="button button-primary">
-            Αποστολή μηνύματος
-        </button>
-
-        <p class="form-message" id="formMessage"></p>
-
-        </form>
-
-    </div>
-    </section>
-
-  </main>
-
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-
-      <a href="#home" class="logo">
-        BLUE<span>CORE</span>
-      </a>
-
-      <p>
-        © <span id="year">2026</span> BlueCore Gym.
-        Όλα τα δικαιώματα διατηρούνται.
-      </p>
-
-    </div>
-  </footer>
-
-
-  <!-- Σύνδεση με το JavaScript -->
-`;
 const gymStyles = String.raw`/* =========================
    BLUECORE GYM — FINAL DESIGN
 ========================= */
@@ -2544,16 +1987,14 @@ function BlueCoreGymDemo() {
           ".trust-item",
           ".contact-info",
           ".contact-form",
-        ].join(",")
-      )
+        ].join(","),
+      ),
     );
 
     animatedElements.forEach((element) => element.classList.add("reveal"));
 
     root
-      .querySelectorAll<HTMLElement>(
-        ".program-grid, .pricing-grid, .reviews-grid, .trust-grid"
-      )
+      .querySelectorAll<HTMLElement>(".program-grid, .pricing-grid, .reviews-grid, .trust-grid")
       .forEach((grid) => {
         Array.from(grid.children).forEach((item, index) => {
           (item as HTMLElement).style.transitionDelay = `${index * 120}ms`;
@@ -2570,7 +2011,7 @@ function BlueCoreGymDemo() {
             currentObserver.unobserve(entry.target);
           });
         },
-        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
       );
       animatedElements.forEach((element) => observer?.observe(element));
     } else {
@@ -2620,10 +2061,8 @@ function BlueCoreGymDemo() {
         // Scroll only this demo document. scrollIntoView can also move the
         // parent Rocket3Dev page when the demo is rendered inside an iframe.
         const headerHeight =
-          root.querySelector<HTMLElement>(".header")?.getBoundingClientRect()
-            .height ?? 0;
-        const targetTop =
-          target.getBoundingClientRect().top + window.scrollY - headerHeight;
+          root.querySelector<HTMLElement>(".header")?.getBoundingClientRect().height ?? 0;
+        const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight;
 
         window.scrollTo({
           top: Math.max(0, targetTop),
@@ -2656,10 +2095,7 @@ function BlueCoreGymDemo() {
       if (!gymVideo || !videoButton) return;
       const paused = gymVideo.paused;
       videoButton.textContent = paused ? "▶" : "Ⅱ";
-      videoButton.setAttribute(
-        "aria-label",
-        paused ? "Αναπαραγωγή βίντεο" : "Παύση βίντεο"
-      );
+      videoButton.setAttribute("aria-label", paused ? "Αναπαραγωγή βίντεο" : "Παύση βίντεο");
     };
 
     const toggleVideo = async () => {
@@ -2725,9 +2161,7 @@ function BlueCoreGymDemo() {
     cleanup.push(() => gymVideo?.removeEventListener("play", updateVideoButton));
     cleanup.push(() => gymVideo?.removeEventListener("pause", updateVideoButton));
     cleanup.push(() => videoObserver?.disconnect());
-    cleanup.push(() =>
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-    );
+    cleanup.push(() => document.removeEventListener("visibilitychange", handleVisibilityChange));
     updateVideoButton();
 
     const form = root.querySelector<HTMLFormElement>("#contactForm");
@@ -2735,8 +2169,7 @@ function BlueCoreGymDemo() {
     const submitDemoForm = (event: Event) => {
       event.preventDefault();
       if (formMessage) {
-        formMessage.textContent =
-          "Το μήνυμα καταχωρήθηκε επιτυχώς για το demo.";
+        formMessage.textContent = "Το μήνυμα καταχωρήθηκε επιτυχώς για το demo.";
       }
       form?.reset();
     };
@@ -2758,11 +2191,482 @@ function BlueCoreGymDemo() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: gymStyles }} />
-      <div
-        ref={rootRef}
-        className="bluecore-demo-root"
-        dangerouslySetInnerHTML={{ __html: gymMarkup }}
-      />
+      <div ref={rootRef} className="bluecore-demo-root">
+        <header className="header">
+          <div className="container navbar">
+            <a href="#home" className="logo">
+              BLUE<span>CORE</span>
+            </a>
+
+            <button
+              className="menu-button"
+              id="menuButton"
+              type="button"
+              aria-label="Άνοιγμα μενού"
+              aria-expanded="false"
+            >
+              ☰
+            </button>
+
+            <nav className="navigation" id="navigation">
+              <ul className="nav-list">
+                <li>
+                  <a href="#home">Αρχική</a>
+                </li>
+                <li>
+                  <a href="#programs">Προγράμματα</a>
+                </li>
+                <li>
+                  <a href="#about">Σχετικά</a>
+                </li>
+                <li>
+                  <a href="#pricing">Συνδρομές</a>
+                </li>
+                <li>
+                  <a href="#reviews">Αξιολογήσεις</a>
+                </li>
+                <li>
+                  <a href="#contact">Επικοινωνία</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+
+        <main>
+          <section className="hero" id="home">
+            <div className="container hero-content">
+              <p className="hero-label">BLUECORE GYM</p>
+
+              <h1>
+                Ξεπέρασε τα <span>όριά σου</span>
+              </h1>
+
+              <p className="hero-text">
+                Σύγχρονος εξοπλισμός, έμπειροι trainers και προγράμματα που θα σε βοηθήσουν να
+                πετύχεις κάθε στόχο.
+              </p>
+
+              <div className="hero-buttons">
+                <a href="#pricing" className="button button-primary">
+                  Ξεκίνα σήμερα
+                </a>
+
+                <a href="#programs" className="button button-secondary">
+                  Δες τα προγράμματα
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="trust-bar" aria-label="Πληροφορίες γυμναστηρίου">
+            <div className="container trust-grid">
+              <div className="trust-item">
+                <strong>06:00 – 23:00</strong>
+                <span>Καθημερινό ωράριο</span>
+              </div>
+
+              <div className="trust-item">
+                <strong>Δωρεάν</strong>
+                <span>Πρώτη δοκιμαστική προπόνηση</span>
+              </div>
+
+              <div className="trust-item">
+                <strong>10+</strong>
+                <span>Πιστοποιημένοι trainers</span>
+              </div>
+              {"\n\n    "}
+            </div>
+          </section>
+
+          <section className="section programs" id="programs">
+            <div className="container">
+              <div className="section-heading">
+                <p className="section-label">ΠΡΟΠΟΝΗΣΗ</p>
+                <h2>Τα προγράμματά μας</h2>
+
+                <p>Επίλεξε το πρόγραμμα που ταιριάζει στις ανάγκες και στους στόχους σου.</p>
+                {"\n        "}
+              </div>
+
+              <div className="program-grid">
+                <article className="program-card">
+                  <div className="program-icon">🏋️</div>
+
+                  <h3>Μυϊκή ενδυνάμωση</h3>
+
+                  <p>
+                    Προπόνηση με ελεύθερα βάρη και σύγχρονα μηχανήματα για δύναμη και μυϊκή
+                    ανάπτυξη.
+                  </p>
+
+                  <a href="#contact">Μάθε περισσότερα →</a>
+                </article>
+
+                <article className="program-card">
+                  <div className="program-icon">🔥</div>
+
+                  <h3>Cross Training</h3>
+
+                  <p>
+                    Δυναμικές προπονήσεις υψηλής έντασης για αντοχή, ταχύτητα και καλύτερη φυσική
+                    κατάσταση.
+                  </p>
+
+                  <a href="#contact">Μάθε περισσότερα →</a>
+                </article>
+
+                <article className="program-card">
+                  <div className="program-icon">🧘</div>
+
+                  <h3>Yoga &amp; Mobility</h3>
+
+                  <p>Ασκήσεις για ευλυγισία, ισορροπία, κινητικότητα και καλύτερη αποκατάσταση.</p>
+
+                  <a href="#contact">Μάθε περισσότερα →</a>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section className="section about" id="about">
+            <div className="container about-grid">
+              <div className="about-image">
+                <img
+                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1000&q=80"
+                  alt="Άτομο που γυμνάζεται στο γυμναστήριο"
+                />
+              </div>
+
+              <div className="about-content">
+                <p className="section-label">ΣΧΕΤΙΚΑ ΜΕ ΕΜΑΣ</p>
+
+                <h2>Ένας χώρος σχεδιασμένος για κάθε στόχο</h2>
+
+                <p>
+                  Στο BlueCore Gym πιστεύουμε ότι η συνέπεια και η σωστή καθοδήγηση μπορούν να
+                  φέρουν πραγματικά αποτελέσματα.
+                </p>
+
+                <p>
+                  Ο χώρος μας διαθέτει σύγχρονο εξοπλισμό και εξειδικευμένους trainers για αρχάριους
+                  και προχωρημένους.
+                </p>
+
+                <div className="about-stats">
+                  <div className="stat">
+                    <strong>500+</strong> <span>Μέλη</span>
+                  </div>
+
+                  <div className="stat">
+                    <strong>10+</strong> <span>Trainers</span>
+                  </div>
+
+                  <div className="stat">
+                    <strong>20+</strong> <span>Προγράμματα</span>
+                  </div>
+                </div>
+
+                <a href="#contact" className="button button-primary">
+                  Επικοινώνησε μαζί μας
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="section gym-video-section" id="experience">
+            <div className="container video-grid">
+              <div className="video-wrapper">
+                <video id="gymVideo" muted loop playsInline preload="none">
+                  <source src="/Videos/gym.mp4" type="video/mp4" />Ο browser σου δεν υποστηρίζει
+                  βίντεο.
+                </video>
+
+                <div className="video-overlay" />
+
+                <button
+                  className="video-button"
+                  id="videoButton"
+                  type="button"
+                  aria-label="Παύση βίντεο"
+                >
+                  Ⅱ
+                </button>
+
+                <div className="video-label">BLUECORE EXPERIENCE</div>
+              </div>
+
+              <div className="video-content">
+                <p className="section-label">Η ΕΜΠΕΙΡΙΑ BLUECORE</p>
+
+                <h2>Ένας χώρος που σε βοηθά να ξεπεράσεις τα όριά σου</h2>
+
+                <p>
+                  Σύγχρονος επαγγελματικός εξοπλισμός, οργανωμένοι χώροι και εξειδικευμένοι trainers
+                  για κάθε επίπεδο προπόνησης.
+                </p>
+
+                <ul className="video-list">
+                  <li>Επαγγελματικός εξοπλισμός</li>
+                  <li>Καθαροί και σύγχρονοι χώροι</li>
+                  <li>Πιστοποιημένοι trainers</li>
+                  <li>Προγράμματα για κάθε επίπεδο</li>
+                </ul>
+
+                <a href="#contact" className="button button-primary">
+                  Κλείσε δωρεάν δοκιμή
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="section pricing" id="pricing">
+            <div className="container">
+              <div className="section-heading">
+                <p className="section-label">ΣΥΝΔΡΟΜΕΣ</p>
+                <h2>Διάλεξε το πακέτο σου</h2>
+
+                <p>Ευέλικτα πακέτα συνδρομών, χωρίς περίπλοκες χρεώσεις.</p>
+                {"\n        "}
+              </div>
+
+              <div className="pricing-grid">
+                <article className="pricing-card">
+                  <h3>Basic</h3>
+
+                  <p className="price">
+                    25€ <span>/ μήνα</span>
+                  </p>
+
+                  <ul>
+                    <li>✓ Πρόσβαση στον χώρο οργάνων</li>
+                    <li>✓ Χρήση αποδυτηρίων</li>
+                    <li>✓ Δωρεάν αρχική αξιολόγηση</li>
+                    <li>✕ Ομαδικά προγράμματα</li>
+                  </ul>
+
+                  <a href="#contact" className="button button-secondary">
+                    Επίλεξε πακέτο
+                  </a>
+                </article>
+
+                <article className="pricing-card featured">
+                  <p className="popular-label">ΔΗΜΟΦΙΛΕΣ</p>
+
+                  <h3>Unlimited</h3>
+
+                  <p className="price">
+                    39€ <span>/ μήνα</span>
+                  </p>
+
+                  <ul>
+                    <li>✓ Απεριόριστη πρόσβαση</li>
+                    <li>✓ Όλα τα ομαδικά προγράμματα</li>
+                    <li>✓ Πρόγραμμα προπόνησης</li>
+                    <li>✓ Μηνιαία αξιολόγηση</li>
+                  </ul>
+
+                  <a href="#contact" className="button button-primary">
+                    Επίλεξε πακέτο
+                  </a>
+                </article>
+
+                <article className="pricing-card">
+                  <h3>Personal</h3>
+
+                  <p className="price">
+                    69€ <span>/ μήνα</span>
+                  </p>
+
+                  <ul>
+                    <li>✓ Όλες οι παροχές Unlimited</li>
+                    <li>✓ Personal training</li>
+                    <li>✓ Εξατομικευμένο πρόγραμμα</li>
+                    <li>✓ Διατροφική καθοδήγηση</li>
+                  </ul>
+
+                  <a href="#contact" className="button button-secondary">
+                    Επίλεξε πακέτο
+                  </a>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section className="section reviews" id="reviews">
+            <div className="container">
+              <div className="section-heading">
+                <p className="section-label">ΑΞΙΟΛΟΓΗΣΕΙΣ</p>
+                <h2>Τι λένε τα μέλη μας</h2>
+
+                <p>Μερικές ενδεικτικές αξιολογήσεις για το demo της ιστοσελίδας.</p>
+                {"\n        "}
+              </div>
+
+              <div className="reviews-grid">
+                <article className="review-card">
+                  <div className="review-stars">★★★★★</div>
+
+                  <p className="review-text">
+                    «Πολύ καθαρός χώρος, σύγχρονα μηχανήματα και εξαιρετική καθοδήγηση από τους
+                    trainers.»
+                  </p>
+
+                  <div className="review-person">
+                    <div className="review-avatar">ΜΚ</div>
+
+                    <div>
+                      <h3>Μαρία Κ.</h3>
+                      <span>Μέλος για 8 μήνες</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article className="review-card">
+                  <div className="review-stars">★★★★★</div>
+
+                  <p className="review-text">
+                    «Τα ομαδικά προγράμματα έχουν πολλή ενέργεια και με βοήθησαν να αποκτήσω
+                    συνέπεια στην προπόνησή μου.»
+                  </p>
+
+                  <div className="review-person">
+                    <div className="review-avatar">ΝΠ</div>
+
+                    <div>
+                      <h3>Νίκος Π.</h3>
+                      <span>Μέλος για 1 χρόνο</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article className="review-card">
+                  <div className="review-stars">★★★★★</div>
+
+                  <p className="review-text">
+                    «Φιλικό περιβάλλον και πολύ καλή εξυπηρέτηση. Το πρόγραμμα προπόνησης
+                    προσαρμόστηκε ακριβώς στους στόχους μου.»
+                  </p>
+
+                  <div className="review-person">
+                    <div className="review-avatar">ΕΔ</div>
+
+                    <div>
+                      <h3>Ελένη Δ.</h3>
+                      <span>Μέλος για 6 μήνες</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section className="section contact" id="contact">
+            <div className="container contact-grid">
+              <div className="contact-info">
+                <p className="section-label">ΕΠΙΚΟΙΝΩΝΙΑ</p>
+
+                <h2>Κλείσε τη δωρεάν δοκιμή σου</h2>
+
+                <p>
+                  Συμπλήρωσε τη φόρμα και η ομάδα μας θα επικοινωνήσει μαζί σου το συντομότερο
+                  δυνατό.
+                </p>
+
+                <div className="contact-details">
+                  <p>
+                    <strong>Διεύθυνση:</strong> Πλατεία Ελευθερίας 12, Ηράκλειο Κρήτης
+                  </p>
+
+                  <p>
+                    <strong>Τηλέφωνο:</strong> 2810 123 456
+                  </p>
+
+                  <p>
+                    <strong>Email:</strong> info@bluecoregym.gr
+                  </p>
+
+                  <p>
+                    <strong>Ωράριο:</strong> Δευτέρα – Κυριακή, 06:00 – 23:00
+                  </p>
+
+                  <div className="contact-map">
+                    <iframe
+                      src="https://www.google.com/maps?q=Πλατεία+Ελευθερίας,+Ηράκλειο,+Κρήτη&amp;output=embed"
+                      title="Τοποθεσία BlueCore Gym στο Ηράκλειο Κρήτης"
+                      loading="lazy"
+                      allowFullScreen
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <form className="contact-form" id="contactForm">
+                <div className="form-group">
+                  <label htmlFor="name">Ονοματεπώνυμο</label>
+
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Γράψε το όνομά σου"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="phone">Τηλέφωνο</label>
+
+                  <input type="tel" id="phone" name="phone" placeholder="69XXXXXXXX" />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="message">Μήνυμα</label>
+
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    placeholder="Πες μας ποιο πρόγραμμα σε ενδιαφέρει"
+                  />
+                </div>
+
+                <button type="submit" className="button button-primary">
+                  Αποστολή μηνύματος
+                </button>
+
+                <p className="form-message" id="formMessage" />
+              </form>
+            </div>
+          </section>
+        </main>
+
+        <footer className="footer">
+          <div className="container footer-content">
+            <a href="#home" className="logo">
+              BLUE<span>CORE</span>
+            </a>
+
+            <p>
+              © <span id="year">2026</span> BlueCore Gym. Όλα τα δικαιώματα διατηρούνται.
+            </p>
+          </div>
+        </footer>
+      </div>
+
       <a className="bluecore-back-link" href="/">
         ← Rocket3Dev
       </a>

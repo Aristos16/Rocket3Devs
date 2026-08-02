@@ -83,11 +83,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Rocket3Dev" },
-      { name: "description", content: "Modern, responsive websites by Rocket3Dev, a three-person web development team based in Heraklion, Crete." },
+      {
+        name: "description",
+        content:
+          "Modern, responsive websites by Rocket3Dev, a three-person web development team based in Heraklion, Crete.",
+      },
       { name: "author", content: "Rocket3Dev" },
       { name: "theme-color", content: "#0b2136" },
       { property: "og:title", content: "Rocket3Dev" },
-      { property: "og:description", content: "Modern, responsive websites by Rocket3Dev, a three-person web development team based in Heraklion, Crete." },
+      {
+        property: "og:description",
+        content:
+          "Modern, responsive websites by Rocket3Dev, a three-person web development team based in Heraklion, Crete.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:image", content: socialImageUrl },
       { property: "og:image:width", content: "1200" },
@@ -95,7 +103,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image:alt", content: "Rocket3Dev web development studio" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Rocket3Dev" },
-      { name: "twitter:description", content: "Modern, responsive websites by Rocket3Dev in Heraklion, Crete." },
+      {
+        name: "twitter:description",
+        content: "Modern, responsive websites by Rocket3Dev in Heraklion, Crete.",
+      },
       { name: "twitter:image", content: socialImageUrl },
     ],
     links: [
@@ -109,7 +120,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
