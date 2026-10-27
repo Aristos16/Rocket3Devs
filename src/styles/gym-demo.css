@@ -55,6 +55,9 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
   --radius: 10px;
   --shadow: 0 22px 55px rgba(0, 0, 0, 0.36);
 
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
   position: relative;
   isolation: isolate;
   min-height: 100vh;
@@ -279,13 +282,22 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
   .menu-button {
     display: none;
 
-    padding: 5px;
+    width: 44px;
+    height: 44px;
+
+    align-items: center;
+    justify-content: center;
 
     background: transparent;
     color: var(--text);
 
-    font-size: 1.7rem;
     cursor: pointer;
+
+    transition: color 0.2s var(--ease-out);
+  }
+
+  .menu-button:hover {
+    color: var(--accent);
   }
 
   .hero {
@@ -393,14 +405,19 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     cursor: pointer;
 
     transition:
-      transform 0.25s ease,
+      transform 0.3s var(--ease-out),
       background-color 0.25s ease,
       border-color 0.25s ease,
-      box-shadow 0.25s ease;
+      box-shadow 0.3s var(--ease-out);
   }
 
   .button:hover {
     transform: translateY(-2px);
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.1s;
   }
 
   .button-primary {
@@ -512,9 +529,9 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     padding: 31px;
 
     transition:
-      transform 0.3s ease,
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
+      transform 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
   }
 
   .program-card:hover {
@@ -540,9 +557,13 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     border: 1px solid rgba(62, 124, 177, 0.28);
     border-radius: 7px;
 
-    font-size: 1.8rem;
+    color: var(--accent);
 
-    filter: grayscale(1);
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .program-card:hover .program-icon {
+    transform: translateY(-3px) scale(1.06);
   }
 
   .program-card h3 {
@@ -697,9 +718,9 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     padding: 36px;
 
     transition:
-      transform 0.3s ease,
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
+      transform 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
   }
 
   .pricing-card:hover {
@@ -772,8 +793,37 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
   }
 
   .pricing-card li {
-    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 9px 0;
+    margin-bottom: 0;
+
     color: var(--muted);
+  }
+
+  .pricing-card li + li {
+    border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  }
+
+  .pricing-card li svg {
+    flex-shrink: 0;
+
+    margin-top: 4px;
+  }
+
+  .pricing-card li[data-included="true"] svg {
+    color: var(--accent);
+  }
+
+  .pricing-card li[data-included="false"] {
+    color: #7a828a;
+  }
+
+  .pricing-card li[data-included="false"] svg {
+    color: var(--muted);
+    opacity: 0.6;
   }
 
   .pricing-card .button {
@@ -798,9 +848,9 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     padding: 30px;
 
     transition:
-      transform 0.3s ease,
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
+      transform 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
   }
 
   .review-card::before {
@@ -1272,24 +1322,6 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     font-weight: 900;
   }
 
-  /* Έγχρωμα emoji προγραμμάτων */
-  .program-icon {
-    filter: none !important;
-
-    font-family:
-      "Apple Color Emoji",
-      "Segoe UI Emoji",
-      "Noto Color Emoji",
-      sans-serif;
-
-    background: rgba(62, 124, 177, 0.12);
-  }
-
-  .program-card:hover .program-icon {
-    filter: none !important;
-    transform: translateY(-4px) scale(1.06);
-  }
-
   .bluecore-back-link {
     position: fixed;
     left: 18px;
@@ -1327,7 +1359,7 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
     .menu-button {
       position: relative;
       z-index: 1100;
-      display: block;
+      display: inline-flex;
     }
 
     .navigation {
@@ -1353,7 +1385,7 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
       visibility: hidden;
 
       transition:
-        transform 0.35s ease,
+        transform 0.35s var(--ease-out),
         visibility 0.35s ease;
     }
 
@@ -1569,6 +1601,12 @@ body.bluecore-preview-root .gym-demo-root .bluecore-back-link {
       padding: 9px 12px;
       font-size: 0.76rem;
     }
+  }
+
+  .gym-demo-root :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   /* Απενεργοποίηση hover σε οθόνες αφής */

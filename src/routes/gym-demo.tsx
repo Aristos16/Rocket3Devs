@@ -6,6 +6,7 @@ import {
   type FormEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
+import { Check, Dumbbell, Flame, Flower2, Menu, Pause, Play, X } from "lucide-react";
 
 import { useMenuOpen } from "../hooks/use-menu-open";
 import { useRevealOnScroll } from "../hooks/use-reveal-on-scroll";
@@ -20,6 +21,14 @@ export const Route = createFileRoute("/gym-demo")({
         name: "description",
         content:
           "Demo ιστοσελίδας γυμναστηρίου με προγράμματα, συνδρομές, αξιολογήσεις, video και φόρμα επικοινωνίας.",
+      },
+    ],
+    links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap",
       },
     ],
   }),
@@ -43,19 +52,19 @@ const trustItems = [
 
 const programs = [
   {
-    icon: "🏋️",
+    icon: <Dumbbell size={26} strokeWidth={1.75} aria-hidden="true" />,
     title: "Μυϊκή ενδυνάμωση",
     description:
       "Προπόνηση με ελεύθερα βάρη και σύγχρονα μηχανήματα για δύναμη και μυϊκή ανάπτυξη.",
   },
   {
-    icon: "🔥",
+    icon: <Flame size={26} strokeWidth={1.75} aria-hidden="true" />,
     title: "Cross Training",
     description:
       "Δυναμικές προπονήσεις υψηλής έντασης για αντοχή, ταχύτητα και καλύτερη φυσική κατάσταση.",
   },
   {
-    icon: "🧘",
+    icon: <Flower2 size={26} strokeWidth={1.75} aria-hidden="true" />,
     title: "Yoga & Mobility",
     description: "Ασκήσεις για ευλυγισία, ισορροπία, κινητικότητα και καλύτερη αποκατάσταση.",
   },
@@ -66,10 +75,10 @@ const plans = [
     name: "Basic",
     price: "25€",
     features: [
-      "✓ Πρόσβαση στον χώρο οργάνων",
-      "✓ Χρήση αποδυτηρίων",
-      "✓ Δωρεάν αρχική αξιολόγηση",
-      "✕ Ομαδικά προγράμματα",
+      { label: "Πρόσβαση στον χώρο οργάνων", included: true },
+      { label: "Χρήση αποδυτηρίων", included: true },
+      { label: "Δωρεάν αρχική αξιολόγηση", included: true },
+      { label: "Ομαδικά προγράμματα", included: false },
     ],
     featured: false,
   },
@@ -77,10 +86,10 @@ const plans = [
     name: "Unlimited",
     price: "39€",
     features: [
-      "✓ Απεριόριστη πρόσβαση",
-      "✓ Όλα τα ομαδικά προγράμματα",
-      "✓ Πρόγραμμα προπόνησης",
-      "✓ Μηνιαία αξιολόγηση",
+      { label: "Απεριόριστη πρόσβαση", included: true },
+      { label: "Όλα τα ομαδικά προγράμματα", included: true },
+      { label: "Πρόγραμμα προπόνησης", included: true },
+      { label: "Μηνιαία αξιολόγηση", included: true },
     ],
     featured: true,
   },
@@ -88,10 +97,10 @@ const plans = [
     name: "Personal",
     price: "69€",
     features: [
-      "✓ Όλες οι παροχές Unlimited",
-      "✓ Personal training",
-      "✓ Εξατομικευμένο πρόγραμμα",
-      "✓ Διατροφική καθοδήγηση",
+      { label: "Όλες οι παροχές Unlimited", included: true },
+      { label: "Personal training", included: true },
+      { label: "Εξατομικευμένο πρόγραμμα", included: true },
+      { label: "Διατροφική καθοδήγηση", included: true },
     ],
     featured: false,
   },
@@ -222,7 +231,11 @@ function BlueCoreGymDemo() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((value) => !value)}
           >
-            {menuOpen ? "✕" : "☰"}
+            {menuOpen ? (
+              <X size={22} strokeWidth={2} aria-hidden="true" />
+            ) : (
+              <Menu size={22} strokeWidth={2} aria-hidden="true" />
+            )}
           </button>
 
           <nav className={`navigation${menuOpen ? " active" : ""}`} aria-label="Κύρια πλοήγηση">
@@ -395,7 +408,11 @@ function BlueCoreGymDemo() {
                 aria-label={videoPlaying ? "Παύση βίντεο" : "Αναπαραγωγή βίντεο"}
                 onClick={toggleVideo}
               >
-                {videoPlaying ? "Ⅱ" : "▶"}
+                {videoPlaying ? (
+                  <Pause size={17} strokeWidth={2} aria-hidden="true" />
+                ) : (
+                  <Play size={17} strokeWidth={2} aria-hidden="true" />
+                )}
               </button>
 
               <div className="video-label">BLUECORE EXPERIENCE</div>
@@ -455,7 +472,14 @@ function BlueCoreGymDemo() {
 
                   <ul>
                     {plan.features.map((feature) => (
-                      <li key={feature}>{feature}</li>
+                      <li key={feature.label} data-included={feature.included}>
+                        {feature.included ? (
+                          <Check size={15} strokeWidth={2.5} aria-hidden="true" />
+                        ) : (
+                          <X size={15} strokeWidth={2.5} aria-hidden="true" />
+                        )}
+                        {feature.label}
+                      </li>
                     ))}
                   </ul>
 

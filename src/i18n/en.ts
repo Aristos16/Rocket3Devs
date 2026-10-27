@@ -33,11 +33,18 @@ export const en: Translations = {
   startProject: "Start a project",
   hero: {
     eyebrow: "A small web studio in Heraklion, Crete",
-    titleBefore: "Professional Websites Built by",
-    titleHighlight: "Three Web Developers",
-    titleAfter: "in Crete",
+    titleBefore: "Websites built",
+    titleHighlight: "to take off.",
+    titleAfter: "",
     primaryButton: "Contact Us",
     secondaryButton: "See Our Services",
+    description:
+      "Thoughtful websites, built by three web developers in Heraklion, Crete. Personal attention, from the first idea to launch.",
+    scrollHint: "Scroll for the rest of our story",
+    objectLabel: "On to the next.",
+    objectDetail: "Design · Development · Lift-off",
+    pauseMotion: "Pause motion",
+    resumeMotion: "Resume motion",
   },
   about: {
     kicker: "About us",

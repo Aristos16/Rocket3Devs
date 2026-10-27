@@ -1,5 +1,3 @@
-import { Rocket } from "lucide-react";
-
 import { navItems, type Translations } from "../../i18n";
 import type { SectionClickHandler } from "./scroll-to-section";
 
@@ -10,37 +8,55 @@ type FooterProps = {
 
 export function Footer({ t, onSectionClick }: FooterProps) {
   return (
-    <footer className="border-t border-[#7898aa]/20 bg-[#0b2136] text-white/70">
-      <div className="mx-auto max-w-6xl px-5 py-5 sm:px-6 sm:py-6">
-        <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:items-center sm:text-left">
-          <div>
-            <div className="flex items-center gap-2 font-semibold text-white">
-              <span className="grid h-8 w-8 place-items-center rounded-md bg-white/10 text-[#c97745]">
-                <Rocket className="h-4 w-4" />
-              </span>
-              Rocket3Dev
-            </div>
-            <p className="mt-1.5 text-xs">{t.footer.location}</p>
-          </div>
-          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs sm:justify-end">
-            {navItems.map((n) => (
-              <li key={n.href}>
-                <a
-                  href={n.href}
-                  onClick={(event) => onSectionClick(event, n.href)}
-                  className="transition-colors hover:text-white"
-                >
-                  {t.nav[n.id]}
-                </a>
-              </li>
-            ))}
-          </ul>
+    <footer className="home-footer">
+      <svg
+        className="home-footer-edge"
+        viewBox="0 0 1440 72"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d="M0 0h1440v12C1040 12 600 74 0 32V0Z" fill="var(--section-blue)" />
+      </svg>
+      <div className="home-wrap">
+        <div className="home-footer-main">
+          <a
+            href="#home"
+            className="home-footer-wordmark"
+            onClick={(event) => onSectionClick(event, "#home")}
+            aria-label="Rocket3Dev"
+            data-reveal="line"
+          >
+            Rocket3Dev<span aria-hidden="true">.</span>
+          </a>
+          <nav aria-label="Footer navigation">
+            <ul className="home-footer-nav">
+              {navItems.map((item, index) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    onClick={(event) => onSectionClick(event, item.href)}
+                    data-reveal="rise"
+                    data-reveal-delay={String(index * 35)}
+                  >
+                    {t.nav[item.id]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <div className="mt-4 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-4 text-center text-[11px] sm:flex-row sm:text-left">
-          <p>
+
+        <div className="home-footer-meta">
+          <p data-reveal="rule">{t.footer.location}</p>
+          <p data-reveal="rule" data-reveal-delay="50">
             © {new Date().getFullYear()} Rocket3Dev. {t.footer.rights}
           </p>
-          <p>{t.footer.builtBy}</p>
+          <p data-reveal="rule" data-reveal-delay="100">
+            {t.footer.builtBy}
+          </p>
+          <a href="mailto:rocket3devs@gmail.com" data-reveal="rule" data-reveal-delay="150">
+            rocket3devs@gmail.com
+          </a>
         </div>
       </div>
     </footer>

@@ -33,11 +33,18 @@ export const el: Translations = {
   startProject: "Μιλήστε μαζί μας",
   hero: {
     eyebrow: "Web studio με έδρα το Ηράκλειο Κρήτης",
-    titleBefore: "Επαγγελματικές ιστοσελίδες από",
-    titleHighlight: "Τρεις Web Developers",
-    titleAfter: "με έδρα την Κρήτη",
+    titleBefore: "Ιστοσελίδες που",
+    titleHighlight: "απογειώνονται.",
+    titleAfter: "",
     primaryButton: "Επικοινωνήστε μαζί μας",
     secondaryButton: "Δείτε τις υπηρεσίες μας",
+    description:
+      "Επαγγελματικές ιστοσελίδες από τρεις web developers στο Ηράκλειο Κρήτης. Με προσωπική φροντίδα, από την ιδέα μέχρι το launch.",
+    scrollHint: "Λίγο πιο κάτω, η ιστορία μας",
+    objectLabel: "Με προορισμό το επόμενο.",
+    objectDetail: "Σχεδιασμός · Ανάπτυξη · Απογείωση",
+    pauseMotion: "Παύση κίνησης",
+    resumeMotion: "Συνέχιση κίνησης",
   },
   about: {
     kicker: "About Us",

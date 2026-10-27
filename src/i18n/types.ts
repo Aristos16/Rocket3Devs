@@ -15,6 +15,12 @@ export type Translations = {
     titleAfter: string;
     primaryButton: string;
     secondaryButton: string;
+    description: string;
+    scrollHint: string;
+    objectLabel: string;
+    objectDetail: string;
+    pauseMotion: string;
+    resumeMotion: string;
   };
   about: {
     kicker: string;

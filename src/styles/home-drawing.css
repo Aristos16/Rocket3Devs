@@ -1,0 +1,138 @@
+.rocket-home .orbit-paper-drawing {
+  width: min(100%, 520px);
+  aspect-ratio: 560 / 390;
+  justify-self: end;
+  color: var(--section-navy);
+}
+.rocket-home .orbit-paper-drawing svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.rocket-home .orbit-sheet {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+.rocket-home .orbit-paper-fold {
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+}
+.rocket-home .orbit-flight-trail {
+  stroke: var(--section-navy);
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-dasharray: 1.01;
+}
+.rocket-home .orbit-flight-trail-accent {
+  stroke: var(--section-orange);
+  stroke-width: 4;
+  opacity: 0.2;
+}
+.rocket-home .orbit-flight-point {
+  fill: var(--section-orange);
+}
+.rocket-home .orbit-rocket-float {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+.rocket-home .orbit-rocket-exhaust {
+  transform-origin: 0 68px;
+  opacity: 0;
+}
+.rocket-home .orbit-paper-drawing.is-visible .orbit-sheet {
+  animation: orbit-paper-settle 850ms var(--ease-out) both;
+}
+.rocket-home .orbit-paper-drawing.is-visible .orbit-sheet-front {
+  animation-delay: 80ms;
+}
+.rocket-home .orbit-paper-drawing.is-visible .orbit-flight-trail {
+  animation: orbit-trail-draw 2000ms var(--ease-in-out) 300ms both;
+}
+.rocket-home .orbit-paper-drawing.is-visible .orbit-rocket-exhaust {
+  animation: orbit-thrust 2000ms var(--ease-in-out) 300ms both;
+}
+.rocket-home .orbit-paper-drawing.is-visible .orbit-rocket-float {
+  animation: orbit-rocket-float 6s ease-in-out 2300ms infinite;
+}
+@supports (offset-path: path("M0 0L1 1")) {
+  .rocket-home .orbit-rocket {
+    transform: none;
+    offset-path: path("M40 306C132 350 286 316 385 211");
+    offset-anchor: 0px 0px;
+    offset-rotate: auto 90deg;
+    offset-distance: 100%;
+  }
+  .rocket-home .orbit-paper-drawing.is-visible .orbit-rocket {
+    animation: orbit-rocket-arrive 2000ms var(--ease-in-out) 300ms both;
+  }
+}
+@keyframes orbit-paper-settle {
+  from {
+    opacity: 0;
+    transform: translateY(16px) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+@keyframes orbit-trail-draw {
+  from {
+    stroke-dashoffset: 1.01;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes orbit-rocket-arrive {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 1;
+  }
+}
+@keyframes orbit-thrust {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scaleY(0.7);
+  }
+  15%,
+  75% {
+    opacity: 0.7;
+    transform: scaleY(1);
+  }
+}
+@keyframes orbit-rocket-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+.rocket-home.motion-paused .orbit-paper-drawing * {
+  animation: none !important;
+  stroke-dashoffset: 0;
+}
+@media (max-width: 767px) {
+  .rocket-home .orbit-paper-drawing {
+    width: min(100%, 430px);
+    margin: 0 auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rocket-home .orbit-paper-drawing * {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+}

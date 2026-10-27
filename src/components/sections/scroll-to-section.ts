@@ -1,42 +1,57 @@
 import type { MouseEvent } from "react";
+import type Lenis from "lenis";
 
 let programmaticScrollActive = false;
+let homeScroller: Pick<Lenis, "scrollTo" | "start" | "stop" | "isStopped"> | null = null;
 
-// Scrolls to the section referenced by `href` using the native smooth
-// scrolling behavior. Client-only: safe to call from event handlers only.
+export function setHomeScroller(scroller: typeof homeScroller) {
+  homeScroller = scroller;
+}
+
+export function setHomeScrollPaused(paused: boolean) {
+  if (paused) homeScroller?.stop();
+  else homeScroller?.start();
+}
+
 export function scrollToSection(href: string): boolean {
+  // A stopped Lenis resets its target when restarted, so wait until an overlay
+  // has closed before starting a programmatic navigation.
+  if (homeScroller?.isStopped) return false;
+
   const sectionId = href.replace("#", "");
   const target = document.getElementById(sectionId);
   if (!target) return false;
 
-  const compactHeaderOffset = window.innerWidth >= 768 ? 86 : 70;
-  const absoluteTop = window.scrollY + target.getBoundingClientRect().top;
-  const targetTop = sectionId === "home" ? 0 : Math.max(0, absoluteTop - compactHeaderOffset);
+  const headerOffset = window.innerWidth >= 768 ? 86 : 70;
+  const documentTop = window.scrollY + target.getBoundingClientRect().top;
+  const targetTop = sectionId === "home" ? 0 : Math.max(0, documentTop - headerOffset);
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   programmaticScrollActive = true;
   window.history.replaceState(null, "", href);
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.scrollTo({
-    top: targetTop,
-    behavior: prefersReducedMotion ? "auto" : "smooth",
-  });
+  if (homeScroller) {
+    homeScroller.scrollTo(targetTop, {
+      immediate: prefersReducedMotion,
+      onComplete: markProgrammaticScrollDone,
+    });
+  } else {
+    window.scrollTo({ top: targetTop, behavior: prefersReducedMotion ? "auto" : "smooth" });
+  }
+
   return true;
 }
 
-export function isProgrammaticScroll(): boolean {
+export function isProgrammaticScroll() {
   return programmaticScrollActive;
 }
 
-export function markProgrammaticScrollDone(): void {
+export function markProgrammaticScrollDone() {
   programmaticScrollActive = false;
 }
 
 export type SectionClickHandler = (event: MouseEvent<HTMLAnchorElement>, href: string) => void;
 
-// Base handler for anchor links: prevents navigation and scrolls smoothly.
-// Components that own extra state (e.g. Header's active section / menu) wrap
-// this to also update their local state.
 export function handleSectionClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
   event.preventDefault();
   scrollToSection(href);

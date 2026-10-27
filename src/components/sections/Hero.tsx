@@ -1,112 +1,210 @@
-import { ArrowRight, Rocket } from "lucide-react";
-
+import { useRef } from "react";
+import { ArrowDown, ArrowUpRight, ChevronsRight, Pause, Play } from "lucide-react";
 import type { Translations } from "../../i18n";
-import type { SectionClickHandler } from "./scroll-to-section";
+import { scrollToSection, type SectionClickHandler } from "./scroll-to-section";
 
 type HeroProps = {
   t: Translations;
   onSectionClick: SectionClickHandler;
+  motionEnabled: boolean;
+  onToggleMotion: () => void;
 };
 
-export function Hero({ t, onSectionClick }: HeroProps) {
+type SwipePillProps = {
+  label: string;
+  href: string;
+  revealDelay: string;
+};
+
+function SwipePill({ label, href, revealDelay }: SwipePillProps) {
+  const pillRef = useRef<HTMLButtonElement | null>(null);
+  const thumbRef = useRef<HTMLSpanElement | null>(null);
+  const dragRef = useRef<{ left: number; padL: number; halfThumb: number; travel: number } | null>(
+    null,
+  );
+
+  const paint = (progress: number) => {
+    pillRef.current?.style.setProperty("--swipe-progress", progress.toFixed(4));
+  };
+
+  const beginDrag = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const pill = pillRef.current;
+    const thumb = thumbRef.current;
+    if (!pill || !thumb) return;
+    const rect = pill.getBoundingClientRect();
+    const style = window.getComputedStyle(pill);
+    const padL = parseFloat(style.paddingLeft);
+    const padR = parseFloat(style.paddingRight);
+    const thumbSize = thumb.offsetWidth;
+    const travel = Math.max(1, rect.width - padL - padR - thumbSize);
+    dragRef.current = { left: rect.left, padL, halfThumb: thumbSize / 2, travel };
+    pill.style.setProperty("--swipe-travel", `${travel}px`);
+    pill.dataset.dragging = "true";
+    pill.setPointerCapture(event.pointerId);
+    paint(0);
+  };
+
+  const updateDrag = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const progress = Math.min(
+      1,
+      Math.max(0, (event.clientX - drag.left - drag.padL - drag.halfThumb) / drag.travel),
+    );
+    paint(progress);
+  };
+
+  const reset = () => {
+    const pill = pillRef.current;
+    if (!pill) return;
+    delete pill.dataset.armed;
+    pill.style.setProperty("--swipe-progress", "0");
+  };
+
+  const fire = () => {
+    const pill = pillRef.current;
+    if (!pill || pill.dataset.armed) return;
+    pill.dataset.armed = "true";
+    delete pill.dataset.dragging;
+    pill.style.setProperty("--swipe-progress", "1");
+    window.setTimeout(() => {
+      scrollToSection(href);
+      window.setTimeout(reset, 900);
+    }, 540);
+  };
+
+  const endDrag = () => {
+    const pill = pillRef.current;
+    if (!pill || !dragRef.current) return;
+    dragRef.current = null;
+    delete pill.dataset.dragging;
+    const progress = parseFloat(pill.style.getPropertyValue("--swipe-progress") || "0");
+    if (progress >= 0.9) fire();
+    else pill.style.setProperty("--swipe-progress", "0");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    fire();
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Synthetic clicks from assistive tech / keyboard report detail 0.
+    if (event.detail !== 0) return;
+    fire();
+  };
+
   return (
-    <section
-      id="home"
-      className="relative scroll-mt-20 overflow-hidden"
-      style={{
-        background:
-          "radial-gradient(circle at 82% 18%, rgba(224,151,89,0.25), transparent 25%), radial-gradient(circle at 12% 88%, rgba(127,166,187,0.30), transparent 34%), linear-gradient(135deg, #07182a 0%, #0b2136 42%, #24445f 100%)",
-      }}
+    <button
+      ref={pillRef}
+      type="button"
+      className="home-primary-link home-swipe-pill"
+      data-reveal="rise"
+      data-reveal-delay={revealDelay}
+      onPointerDown={beginDrag}
+      onPointerMove={updateDrag}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onKeyDown={handleKeyDown}
+      onClick={handleClick}
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -right-24 -top-28 h-[420px] w-[420px] rounded-full border border-[#7898aa]/20 hero-orbit" />
-        <div className="absolute right-8 top-12 h-[280px] w-[280px] rounded-full border border-[#c97745]/15 hero-orbit" />
+      <span className="home-swipe-fill" aria-hidden="true" />
+      <span className="home-swipe-thumb" ref={thumbRef} aria-hidden="true">
+        <ArrowUpRight size={20} aria-hidden="true" />
+      </span>
+      <span className="home-swipe-label">
+        {label}
+        <ChevronsRight size={15} className="home-swipe-cue" aria-hidden="true" />
+      </span>
+    </button>
+  );
+}
 
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 1440 760"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="trailGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#7898aa" stopOpacity="0" />
-              <stop offset="45%" stopColor="#91adba" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#c97745" stopOpacity="0.88" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M-120 650 C 250 430, 540 560, 790 350 S 1180 80, 1540 170"
-            fill="none"
-            stroke="url(#trailGradient)"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-            className="rocket-trail"
-          />
-          <path
-            d="M80 740 C 420 520, 680 700, 950 470 S 1280 260, 1510 320"
-            fill="none"
-            stroke="#7898aa"
-            strokeOpacity="0.22"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            className="rocket-trail-slow"
-          />
-          <path
-            d="M940 70 C 1110 160, 1160 290, 1070 410 C 1010 490, 1110 585, 1420 620"
-            fill="none"
-            stroke="#c97745"
-            strokeOpacity="0.17"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            className="rocket-trail-slow"
-          />
-        </svg>
-
-        <div className="hero-rocket absolute right-[10%] top-[18%] hidden rounded-3xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur-sm lg:block">
-          <Rocket className="h-20 w-20 text-[#d98a50] drop-shadow-[0_10px_25px_rgba(224,151,89,0.35)]" />
-        </div>
-        <div className="absolute right-[6%] top-[48%] hidden text-[220px] font-black leading-none text-white/[0.025] lg:block">
-          3
-        </div>
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 sm:px-6 sm:pb-28 sm:pt-20 md:pb-40 md:pt-32">
-        <div className="max-w-3xl animate-fade-up text-center sm:text-left">
-          <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-[#c97745]/35 bg-white/5 px-3 py-1 text-xs font-medium text-[#d4e0e3] backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#c97745] shadow-[0_0_12px_rgba(224,151,89,0.9)]" />
-            {t.hero.eyebrow}
-          </div>
-          <h1 className="text-[clamp(2.35rem,11vw,3.5rem)] font-bold leading-[1.04] tracking-[-0.03em] text-white sm:text-5xl md:text-6xl">
-            {t.hero.titleBefore} <span className="text-[#d98a50]">{t.hero.titleHighlight}</span>{" "}
-            {t.hero.titleAfter}
-          </h1>
-          <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-4">
-            <a
-              href="#contact"
-              onClick={(event) => onSectionClick(event, "#contact")}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#c97745] px-6 py-3.5 sm:w-auto sm:py-3 font-semibold text-[#0b2136] shadow-[0_12px_35px_rgba(224,151,89,0.25)] transition-all hover:-translate-y-0.5 hover:bg-[#d98a50] active:scale-[0.98]"
-            >
-              {t.hero.primaryButton} <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#services"
-              onClick={(event) => onSectionClick(event, "#services")}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#7898aa]/50 bg-white/5 px-6 py-3.5 sm:w-auto sm:py-3 font-medium text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/10 active:scale-[0.98]"
-            >
-              {t.hero.secondaryButton}
-            </a>
-          </div>
-
-          {/* Mobile/tablet rocket — kept inside the hero flow so it never covers text or buttons */}
-          <div
-            className="mt-9 flex justify-center sm:justify-end sm:pr-8 lg:hidden"
-            aria-hidden="true"
-          >
-            <div className="hero-rocket rounded-2xl border border-white/10 bg-white/[0.06] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.24)] backdrop-blur-sm">
-              <Rocket className="h-12 w-12 text-[#d98a50] drop-shadow-[0_10px_25px_rgba(224,151,89,0.4)] sm:h-14 sm:w-14" />
+export function Hero({ t, onSectionClick, motionEnabled, onToggleMotion }: HeroProps) {
+  return (
+    <section id="home" className="home-hero home-space">
+      <div className="home-hero-inner">
+        <div className="home-hero-composition">
+          <div className="home-hero-copy">
+            <p className="home-hero-eyebrow" data-reveal="rise" data-reveal-delay="0">
+              <i />
+              {t.hero.eyebrow}
+            </p>
+            <h1>
+              <span className="home-title-line">
+                <span data-reveal="headline" data-reveal-delay="140">
+                  {t.hero.titleBefore}
+                </span>
+              </span>
+              <span className="home-title-line">
+                <span data-reveal="headline" data-reveal-delay="360">
+                  {t.hero.titleHighlight}
+                </span>
+              </span>
+            </h1>
+            <p className="home-hero-description" data-reveal="rise" data-reveal-delay="640">
+              {t.hero.description}
+            </p>
+            <div className="home-hero-actions">
+              <SwipePill label={t.hero.primaryButton} href="#contact" revealDelay="860" />
+              <a
+                className="home-secondary-link"
+                href="#portfolio"
+                onClick={(event) => onSectionClick(event, "#portfolio")}
+                data-reveal="rise"
+                data-reveal-delay="980"
+              >
+                {t.portfolio.kicker}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
             </div>
           </div>
+          <div className="home-rocket-display">
+            <svg
+              className="home-hero-drawing"
+              data-reveal="image"
+              data-reveal-delay="1100"
+              viewBox="0 0 560 620"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                className="home-hero-flight-line"
+                d="M66 505C-15 288 275 72 445 129c191 64-72 454-219 431C105 540 438 231 490 369"
+              />
+              <path className="home-hero-spark" d="M463 78v32m-16-16h32M87 393v22m-11-11h22" />
+              <circle cx="115" cy="195" r="4" fill="currentColor" />
+            </svg>
+            <div className="home-rocket-stage" aria-hidden="true" />
+            <button
+              type="button"
+              className="home-motion-toggle"
+              onClick={onToggleMotion}
+              aria-label={motionEnabled ? t.hero.pauseMotion : t.hero.resumeMotion}
+              title={motionEnabled ? t.hero.pauseMotion : t.hero.resumeMotion}
+              aria-pressed={!motionEnabled}
+              data-reveal="rise"
+              data-reveal-delay="1220"
+            >
+              {motionEnabled ? (
+                <Pause size={16} aria-hidden="true" />
+              ) : (
+                <Play size={16} aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
+        <a
+          href="#portfolio"
+          onClick={(event) => onSectionClick(event, "#portfolio")}
+          className="home-scroll-cue"
+          aria-label={t.hero.scrollHint}
+          data-reveal="rise"
+          data-reveal-delay="1320"
+        >
+          <ArrowDown size={19} aria-hidden="true" />
+        </a>
       </div>
     </section>
   );

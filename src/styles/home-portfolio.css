@@ -1,0 +1,309 @@
+.rocket-home .home-portfolio {
+  padding-block: clamp(4.75rem, 8vw, 7.5rem) clamp(5.5rem, 9vw, 8.5rem);
+}
+
+.rocket-home .home-portfolio-heading {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  column-gap: clamp(2rem, 6vw, 6rem);
+  align-items: end;
+  max-width: none;
+  margin: 0 0 clamp(2rem, 4vw, 3.5rem);
+}
+.rocket-home .home-portfolio-heading .home-eyebrow {
+  grid-column: 1 / -1;
+}
+.rocket-home .home-portfolio-intro {
+  max-width: 34ch;
+  margin: 0 0 0.15rem;
+  color: var(--section-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.rocket-home .home-portfolio-heading .home-heading {
+  max-width: 16ch;
+  font-size: clamp(2.35rem, 5vw, 4.25rem);
+  line-height: 0.99;
+}
+
+.rocket-home .home-projects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1.35rem, 4.4vw, 4rem);
+}
+
+.rocket-home .home-project--2 {
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+.rocket-home .home-project-art {
+  position: relative;
+  display: block;
+  min-height: 0;
+  aspect-ratio: auto;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  isolation: isolate;
+  text-decoration: none;
+}
+
+.rocket-home .home-project-frame {
+  position: relative;
+  display: block;
+  padding: clamp(0.55rem, 1.15vw, 0.9rem);
+  overflow: hidden;
+  border-radius: 2rem 2rem 2rem 0.45rem;
+  background: #dce7e9;
+  box-shadow: 0 1.2rem 2.5rem rgb(11 33 54 / 8%);
+  transition:
+    box-shadow 320ms ease,
+    transform 420ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.rocket-home .home-project--2 .home-project-frame {
+  border-radius: 2rem 0.45rem 2rem 2rem;
+  background: #e8ddcf;
+}
+
+.rocket-home .home-project-browser {
+  display: flex;
+  height: 1.7rem;
+  align-items: center;
+  gap: 0.32rem;
+  padding-inline: 0.55rem;
+}
+.rocket-home .home-project-browser > span {
+  margin-left: 0.5rem;
+  color: #53636c;
+  font-size: 0.55rem;
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rocket-home .home-project-browser > .home-project-index {
+  margin-left: auto;
+}
+
+.rocket-home .home-project-browser i {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: rgb(11 33 54 / 22%);
+}
+
+.rocket-home .home-project-browser i:first-child {
+  background: #c16b48;
+}
+
+.rocket-home .home-project-screen {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.62 / 1;
+  border: 1px solid rgb(11 33 54 / 9%);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.3rem;
+  background: #0b0f14;
+  isolation: isolate;
+}
+
+.rocket-home .home-project--2 .home-project-screen {
+  border-radius: 1.25rem 0.3rem 1.25rem 1.25rem;
+}
+
+.rocket-home .home-project-screen img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 650ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.rocket-home .home-project-fallback {
+  position: absolute;
+  inset: 35% 40%;
+  z-index: -1;
+  width: 20%;
+  height: 30%;
+  color: #df966a;
+  stroke-width: 0.8;
+}
+
+.rocket-home .home-project-open {
+  position: absolute;
+  right: clamp(1rem, 2.4vw, 1.8rem);
+  bottom: clamp(1rem, 2.4vw, 1.8rem);
+  z-index: 1;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgb(11 33 54 / 9%);
+  border-radius: 50%;
+  background: var(--section-paper);
+  color: var(--section-ink);
+  box-shadow: 0 4px 14px rgb(11 33 54 / 15%);
+  transition: transform 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.rocket-home .home-project-open svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.rocket-home .home-project-caption {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1rem;
+  padding: 1rem 0.45rem 0;
+  align-items: end;
+}
+
+.rocket-home .home-project-caption p {
+  grid-column: 1 / -1;
+  margin: 0 0 0.35rem;
+  color: var(--section-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rocket-home .home-project-caption h3 {
+  margin: 0;
+  font-size: clamp(1.08rem, 1.7vw, 1.35rem);
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.rocket-home .home-project-caption > a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--section-orange);
+  font-size: 0.83rem;
+  text-decoration: none;
+}
+.rocket-home .home-project-caption > a svg {
+  width: 16px;
+  height: 16px;
+}
+.rocket-home .home-project-features {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 0.35rem 0.7rem;
+  margin: 0.6rem 0 0;
+  padding: 0.8rem 0 0;
+  border-top: 1px solid var(--section-line);
+  list-style: none;
+  color: var(--section-muted);
+  font-size: 0.72rem;
+}
+.rocket-home .home-project-features li + li::before {
+  margin-right: 0.7rem;
+  color: var(--section-orange);
+  content: "·";
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rocket-home .home-project-art:hover .home-project-frame {
+    transform: translateY(-5px);
+    box-shadow: 0 1.6rem 3rem rgb(11 33 54 / 14%);
+  }
+
+  .rocket-home .home-project-art:hover img {
+    transform: scale(1.025);
+  }
+
+  .rocket-home .home-project-art:hover .home-project-open {
+    transform: rotate(45deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .rocket-home .home-portfolio {
+    padding-block: 3.75rem 2.5rem;
+  }
+
+  .rocket-home .home-portfolio-heading {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+    margin-bottom: 1.75rem;
+  }
+  .rocket-home .home-portfolio-intro {
+    max-width: 36ch;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .rocket-home .home-portfolio-heading .home-heading {
+    max-width: 17ch;
+    font-size: clamp(2rem, 8.2vw, 2.3rem);
+    line-height: 1;
+  }
+
+  .rocket-home .home-projects {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .rocket-home .home-project--2 {
+    margin-top: 0;
+  }
+
+  .rocket-home .home-project-art {
+    min-height: 0;
+  }
+
+  .rocket-home .home-project-frame {
+    padding: 0.55rem;
+    border-radius: 1.5rem 1.5rem 1.5rem 0.35rem;
+  }
+
+  .rocket-home .home-project--2 .home-project-frame {
+    border-radius: 1.5rem 0.35rem 1.5rem 1.5rem;
+  }
+
+  .rocket-home .home-project-browser {
+    height: 1.45rem;
+  }
+
+  .rocket-home .home-project-screen {
+    aspect-ratio: 1.5 / 1;
+    border-radius: 1rem 1rem 1rem 0.25rem;
+  }
+
+  .rocket-home .home-project--2 .home-project-screen {
+    border-radius: 1rem 0.25rem 1rem 1rem;
+  }
+
+  .rocket-home .home-project-caption {
+    padding: 0.8rem 0.35rem 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .rocket-home .home-project--1,
+  .rocket-home .home-project--2 {
+    width: 100%;
+  }
+  .rocket-home .home-project-caption {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rocket-home .home-project-frame,
+  .rocket-home .home-project-screen img,
+  .rocket-home .home-project-open {
+    transition: none;
+  }
+}

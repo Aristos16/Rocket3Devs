@@ -7,6 +7,21 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  plugins: [
+    {
+      name: "r3f-devtools-attributes",
+      apply: "serve",
+      enforce: "post",
+      transform(code, id) {
+        if (!/\/src\/components\/three\/[^?]+\.tsx(?:\?|$)/.test(id)) return;
+        // Devtools' HTML source attributes are invalid Three.js object properties.
+        return {
+          code: code.replace(/\s*["']data-tsd-source["']:\s*["'][^"']*["'],?/g, ""),
+          map: null,
+        };
+      },
+    },
+  ],
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

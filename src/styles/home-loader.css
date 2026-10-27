@@ -1,0 +1,223 @@
+.home-launch {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  overflow: hidden;
+  overscroll-behavior: none;
+  color: var(--paper);
+}
+.home-launch-backdrop {
+  position: absolute;
+  inset: 0;
+}
+.home-launch-topline {
+  position: absolute;
+  top: clamp(28px, 5vw, 64px);
+  left: clamp(24px, 5vw, 72px);
+  right: clamp(24px, 5vw, 72px);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  color: #bbced8;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: launch-caption-arrive 650ms var(--ease-out) 80ms both;
+}
+.home-launch-signature {
+  position: absolute;
+  top: 54%;
+  left: 5%;
+  right: 5%;
+  text-align: center;
+}
+.home-launch-wordmark {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.08em 0.08em 0.18em;
+  font-size: clamp(58px, 14.8vw, 210px);
+  font-weight: 550;
+  letter-spacing: -0.075em;
+  line-height: 0.95;
+  white-space: nowrap;
+}
+.home-launch-wordmark > span {
+  display: block;
+  animation: launch-brand-arrive 1100ms var(--ease-out) both;
+}
+.home-launch-wordmark > span:nth-child(2) {
+  animation-delay: 80ms;
+}
+.home-launch-wordmark > span:nth-child(3) {
+  animation-delay: 160ms;
+}
+.home-launch-wordmark > span:nth-child(4) {
+  animation-delay: 240ms;
+}
+.home-launch-number,
+.home-launch-point {
+  color: #e6a477;
+}
+.home-launch-caption {
+  margin: 0;
+  color: #bbced8;
+  font-size: clamp(10px, 1vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  animation: launch-caption-arrive 650ms var(--ease-out) 450ms both;
+}
+.home-launch-footer {
+  position: absolute;
+  left: clamp(24px, 5vw, 72px);
+  right: clamp(24px, 5vw, 72px);
+  bottom: max(28px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgb(197 217 228 / 20%);
+  animation: launch-caption-arrive 650ms var(--ease-out) 550ms both;
+}
+.home-launch-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #bbced8;
+  font-size: 11px;
+}
+.home-launch-status i {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: #e6a477;
+  animation: launch-status-pulse 1600ms ease-in-out infinite;
+}
+.home-launch-skip {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 24px;
+  padding: 0 0 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--paper);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.home-launch-skip span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgb(197 217 228 / 30%);
+  border-radius: 50%;
+  color: #e6a477;
+  font-size: 20px;
+}
+.home-launch.is-leaving {
+  pointer-events: none;
+  animation: launch-depart 750ms ease both;
+}
+.rocket-home[data-loading="true"][data-scene-ready="true"] .home-canvas {
+  transition: none;
+  animation: launch-rocket-arrive 1800ms ease-in-out both;
+}
+@keyframes launch-rocket-arrive {
+  from {
+    opacity: 1;
+    /* Counter the wrapper's tilt so the flight crosses the bottom-left corner. */
+    transform: rotate(22deg) translate3d(-200vw, 280vh, 0) rotate(12deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(22deg) translate3d(0, 0, 0) rotate(-22deg);
+  }
+}
+@keyframes launch-brand-arrive {
+  from {
+    transform: translateY(115%) rotate(4deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes launch-caption-arrive {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes launch-status-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+@keyframes launch-depart {
+  to {
+    opacity: 0;
+  }
+}
+@media (max-width: 767px) {
+  .home-launch-topline {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .home-launch-signature {
+    top: 55%;
+  }
+  .home-launch-footer {
+    gap: 12px;
+  }
+  .home-launch-status {
+    max-width: 18ch;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .home-launch-skip {
+    gap: 12px;
+    white-space: nowrap;
+  }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  .home-launch-signature {
+    top: 34%;
+    left: 50%;
+    right: 5%;
+    text-align: left;
+  }
+  .home-launch-wordmark {
+    justify-content: flex-start;
+    padding-left: 0;
+    font-size: 7vw;
+  }
+  .home-launch-caption {
+    font-size: 8px;
+    letter-spacing: 0.13em;
+  }
+  .home-launch-topline {
+    top: 24px;
+  }
+  .home-launch-footer {
+    bottom: 16px;
+    padding-top: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rocket-home[data-loading="true"][data-scene-ready="true"] .home-canvas {
+    animation: none;
+  }
+  .home-launch {
+    display: none;
+  }
+}
