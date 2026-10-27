@@ -16,7 +16,7 @@ export default function HomeScene({ rootRef, motion }: HomeSceneProps) {
   const [tabVisible, setTabVisible] = useState(true);
   const [failed, setFailed] = useState(false);
   const [warmed, setWarmed] = useState(false);
-  const [dpr, setDpr] = useState(1);
+  const [dpr, setDpr] = useState(1.5);
   const progressRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
   const invalidateRef = useRef<(() => void) | null>(null);
@@ -48,7 +48,7 @@ export default function HomeScene({ rootRef, motion }: HomeSceneProps) {
       setDpr(
         reducedQuality.current
           ? 1
-          : Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1 : 1.5),
+          : Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.5 : 2),
       );
     const updatePointer = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;
